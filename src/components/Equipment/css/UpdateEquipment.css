@@ -1,0 +1,33 @@
+.container-update {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: 300px 1fr;
+
+}
+
+.form-update {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.form-update form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-update form button {
+    margin-top: 30px;
+}
+
+.modal-form-supplier {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.errMsg {
+    color: red;
+}

@@ -1,0 +1,83 @@
+.container-sheet-view {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+}
+
+.steps-maintenance {
+    grid-column: 2;
+}
+
+.flex-step-maintenance {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 200px;
+    min-width: 900px;
+    max-width: 900px;
+    margin: 300px auto;
+    background-color: hsl(213, 43%, 96%);
+    padding: 60px 60px;
+    border-radius: 30px;
+}
+
+.step-maintenance {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+}
+
+.action-btn-step {
+    cursor: pointer;
+}
+
+.action-btn-step:hover {
+    transform: scale(1.8);
+}
+
+.doneBtn {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+
+.comment-step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+.comment-section {
+    width: 100%;
+
+}
+
+.comment-card {
+    width: 100%;
+} 
+
+.comment-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 30px 30px;
+}
+
+.comment-user {
+    /* width: 60%; */
+}
+
+.comment-text {
+    /* width: 100%; */
+}
+
+
+
+
+
+
+

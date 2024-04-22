@@ -1,0 +1,129 @@
+.container {
+    min-height: 100vh;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    grid-template-rows: 100px 200px 200px 200px 100px 1fr;   
+}
+
+.sidebar {
+    grid-column: 1;
+    grid-row: 1 / 6;
+}
+
+
+
+.main-container .search-bar-container {
+    grid-column: 3 / 4;
+    grid-row: 1;
+    margin-left: 60px;
+}
+
+#search-field{
+   width: 600px; 
+   /* margin: 20px; */
+   height: 10px;
+   /* border-radius: 20px; */
+}
+
+.main-container {
+    grid-column: 2;
+    grid-row: 2 / 5; 
+}
+
+.card-container {
+    width: 500px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 5px;
+    grid-auto-rows: minmax(100px, auto);
+    min-width: 600px;
+}
+
+.main-container .equipment-card {
+    min-width: 300px;
+    min-height: 400px;
+    /* margin: 20px; */
+    /* padding: 10px; */
+    background-color: #f0f4f9;
+    border-radius: 10px;
+    /* position: relative; */
+    cursor: pointer;
+    /* text-decoration: none; */
+    max-height: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.main-container .equipment-card .card-link{
+    text-decoration: none;
+    color: black;
+}
+
+.main-container .equipment-card:hover {
+    background-color: #dfe4ea;
+    transform: translateY(-5px);
+    cursor: pointer;
+}
+
+.equipment-detail-card {
+    display: flex;
+    flex-direction: column;
+    gap: 5px
+}
+
+
+
+/* 
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch; 
+}
+
+.main-container .search-bar-container {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch; 
+    justify-content: center;
+}
+
+.card-container {
+    width: 500px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 5px;
+    grid-auto-rows: minmax(100px, auto);
+    min-width: 600px;
+}
+.main-container .equipment-card {
+    min-width: 300px;
+    min-height: 300px;
+    margin: 20px;
+    padding: 10px;
+    background-color: #f0f4f9;
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+    max-height: 200px;
+}
+
+.main-container .equipment-card .card-link{
+    text-decoration: none;
+    color: black;
+}
+
+.main-container .equipment-card:hover {
+    background-color: #dfe4ea;
+    transform: translateY(-5px);
+    cursor: pointer;
+}
+ */
