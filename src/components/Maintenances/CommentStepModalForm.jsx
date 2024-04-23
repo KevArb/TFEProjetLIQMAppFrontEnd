@@ -16,11 +16,14 @@ const CommentStepModalForm = ( ids ) => {
     const [id, setId] = useState(ids.stepId);
     const [idMaintenance, setIdMaintenance] = useState(ids.maintenanceId);
     const [step, setStep] = useState([]);
+    const [errMsg, setErrMsg] = useState({
+        commentErr: null,
+        reasonErr: null,
+    });
     const [data, setData] = useState({
         comment: '',
         reasonComment: '',
         step: id,
-
     });
     
     const handleOpenModalForm = () => {
@@ -63,7 +66,6 @@ const CommentStepModalForm = ( ids ) => {
         const data = {
             status: status
         }
-
         return await axios.patch(`http://127.0.0.1:8000/api/maintenanceSheet/steps/${id}`, data, { headers }).then((response) => {
             console.log(response);
         }).catch((error) => {
@@ -72,21 +74,27 @@ const CommentStepModalForm = ( ids ) => {
     }
 
     const handleSubmit = async () => {
-        if (data.reasonComment === 'Général') {
-            postComment();
-            window.location.reload();
-        } else if (data.reasonComment === 'En erreur') {
-            postComment();
-            updateStatusStep('En erreur');
-            window.location.reload();
-        } else if (data.reasonComment === 'En attente') {
-            postComment();
-            updateStatusStep('En attente');
-            window.location.reload();
-        } else if (data.reasonComment === 'Réouvrir') {
-            postComment();
-            updateStatusStep('En cours');
-            window.location.reload();
+        
+        if (data.comment === '' || data.reasonComment === '' || data.reasonComment === 'default') {
+            if (data.comment === '') setErrMsg({ commentErr: 'Veuillez renseigner un commentaire'})
+            if (data.reasonComment === '' || data.reasonComment === 'default') setErrMsg({ reasonErr: 'Veuillez renseigner un statut'}) 
+        } else {
+            if (data.reasonComment === 'Général') {
+                postComment();
+                window.location.reload();
+            } else if (data.reasonComment === 'En erreur') {
+                postComment();
+                updateStatusStep('En erreur');
+                window.location.reload();
+            } else if (data.reasonComment === 'En attente') {
+                postComment();
+                updateStatusStep('En attente');
+                window.location.reload();
+            } else if (data.reasonComment === 'Réouvrir') {
+                postComment();
+                updateStatusStep('En cours');
+                window.location.reload();
+            }
         }
     }
 
@@ -107,22 +115,23 @@ const CommentStepModalForm = ( ids ) => {
         fetchData(); 
     }, [])
 
-    console.log(data)
-
     return (
         <div>
             <Dialog open={open}>
                 <DialogTitle>Commenter étape</DialogTitle>
                     <DialogContent className='modalForm'>
                         <InputLabel>Status</InputLabel>
-                        <Select name='reasonComment' onChange={handleChangeSelectStatus} defaultValue='Général'>
+                        <Select name='reasonComment' onChange={handleChangeSelectStatus} defaultValue='default'>
+                            <MenuItem value='default'>-- Statut --</MenuItem>
                             <MenuItem value='En attente'>En attente</MenuItem>
                             <MenuItem value='En erreur'>En erreur</MenuItem>
                             <MenuItem value='Général'>Général</MenuItem>
                             <MenuItem value='Réouvrir'>Réouvrir</MenuItem>
                         </Select>
+                        {errMsg.reasonErr ? <div className='error-msg'>{errMsg.reasonErr }</div> : <div></div>}
                         <TextField className='textfiled-modal-comment' type="text" name='comment' placeholder='Commentaire' value={data.comment} onChange={handleComment} multiline/>
-                        <Button onClick={handleSubmit}>Confirmer</Button> 
+                        {errMsg.commentErr ? <div className='error-msg'>{errMsg.commentErr}</div> : <div></div>}
+                        <Button onClick={handleSubmit}>Confirmer</Button>  
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleOpenModalForm} >Annuler</Button>

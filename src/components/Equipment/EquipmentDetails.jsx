@@ -53,7 +53,6 @@ const EquipmentDetails = () => {
         } catch (error) {
             console.log(error)
         }
-
     }
     
     // Fetch equipment data
@@ -88,7 +87,7 @@ const EquipmentDetails = () => {
         maintenances = equipment.maintenances
     }
 
-    // fetch maintenance sheets data `http://127.0.0.1:8000/api/equipment/${id}/maintenanceSheet/byEquipment`
+    // fetch maintenance sheets data 
     useEffect(() => {
         const fetchData = async () => { 
             await axios.get(`http://127.0.0.1:8000/api/equipment/${id}/maintenanceSheet/?isValidate=false`, { headers }).then((response) => {
@@ -121,8 +120,6 @@ const EquipmentDetails = () => {
                     </div>
                     <div className="equipment-img">
                         <img src={assets.dummy} alt="" />
-                        {/* <p>{equipment.image}</p> */}
-                        {/* <image src={equipment.image} alt="" /> */}
                     </div>
                     <div className="equipment-details">
                         <h2>Détails : </h2>
@@ -132,11 +129,6 @@ const EquipmentDetails = () => {
                         <p>{equipment.description}</p>
                         <label>Serial Number :</label>
                         <p>{equipment.serialNumber}</p>
-                        {/* <p>{equipment.service}</p> */}
-                        {/* <p>{equipment.category}</p> */}
-                        {/* <p>{equipment.service}</p> */}
-                        {/* <p>{equipment.supplier}</p> */}
-                        {/* <p>{equipment.nbIncidents}</p> */}
                     </div>
 
                     <div className="equipment-incident">
@@ -146,19 +138,11 @@ const EquipmentDetails = () => {
                                 <img className='add-img' src={assets.addIcon}></img>
                             </div>
                         </div>
-                        {/* <h2>Incident en cours</h2>
-                        <div className="new-incident-btn">
-                                <div className='add-btn'>
-                                    <img className='add-img' src={assets.addIcon}></img>
-                                </div>
-                        </div> */}
-                        {/* <Link to={`/`} > */}
                         <div className="incidents-view">
                                 {incidents.map((el) => {
                                     return(
                                         <div key={el.id}>
                                             <div onClick={() => showIncident(el.id)} className='link-incident'>
-                                            {/* <Link className='link-incident' to={`/${el.id}/incident`}> */}
                                                 <div className='card-details'>
                                                     <div>
                                                         <p>{el.title}</p>
@@ -177,17 +161,13 @@ const EquipmentDetails = () => {
                                                         <Chip label={el.status} />
                                                     </div>                                
                                                 </div> 
-                                            {/* </Link>  */}
                                             </div>
                                             <div className='sep-incident'></div>
-                                        </div>
-                                        
+                                        </div>                                       
                                     )                   
                                 })}
                                 
                             </div>
-
-                        {/* <Link/> */}
                     </div>
 
                     <div className="equipment-maintenance">

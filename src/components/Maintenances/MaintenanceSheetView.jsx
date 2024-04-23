@@ -166,6 +166,8 @@ const MaintenanceSheetView = () => {
         })
     };
 
+    console.log(steps)
+
     return (
         <div className='container-sheet-view'>
             <Sidebar userRole={role} />
@@ -199,8 +201,6 @@ const MaintenanceSheetView = () => {
                                         <div className='action-btn-step' type='button'><FontAwesomeIcon icon={faCircleCheck} /></div>
                                     }
                                     <div onClick={() => handleClickSteps( step._id, 'En cours' )} className='action-btn-step'><FontAwesomeIcon icon={faFilePen} /></div>
-                                    {/* <div onClick={() => handleClickSteps( step._id, 'En attente' )} className='action-btn-step'><FontAwesomeIcon icon={faClock} /></div>
-                                    <div onClick={() => handleClickSteps( step._id, 'En erreur' )} className='action-btn-step'><FontAwesomeIcon icon={faTriangleExclamation} /></div> */}
                                     <div onClick={() => commmentModalFormSteps( step._id, step.maintenanceSheet )} className='action-btn-step'><FontAwesomeIcon icon={faComment} /></div>
                                 </div>
                                 {needCommentStep ? <div>
@@ -217,7 +217,9 @@ const MaintenanceSheetView = () => {
                     })}
                     <div className="confirm-maintenance-sheet">
                         <Button onClick={handleConfirmMaintenanceSheet}>Valider</Button>
-                        <Button>Clôturer</Button>
+                        {
+                            fms.finalStatus === 'En erreur' || fms.finalStatus === 'En attente'  ? <div><Button>Clôturer</Button></div> : <div></div>
+                        }     
                     </div>
                     {comments ? <div><h1>Commentaires</h1></div> : <div></div>}
                     <div className='comment-section'>

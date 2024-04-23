@@ -75,6 +75,15 @@
     /* width: 100%; */
 }
 
+.confirm-maintenance-sheet {
+    display: flex;
+    flex-direction: row;
+}
+
+.error-msg {
+    color: red;
+}
+
 
 
 
