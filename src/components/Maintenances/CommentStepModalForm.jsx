@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, InputLabel, TextField } from '@mui/material';
@@ -6,7 +7,6 @@ import axios from 'axios';
 
 const CommentStepModalForm = ( ids ) => {
 
-    console.log(ids)
     const token = Cookies.get('token');
     const headers = {
         'Authorization': 'Bearer '+ token
@@ -58,7 +58,7 @@ const CommentStepModalForm = ( ids ) => {
         return await axios.post(`http://127.0.0.1:8000/api/maintenanceSheet/steps/comment/`, commentData, { headers }).then((response) => {
             console.log(response);
         }).catch((error) => {
-            console.log(error)
+            // console.log(error)
         })
     }
 
@@ -69,7 +69,7 @@ const CommentStepModalForm = ( ids ) => {
         return await axios.patch(`http://127.0.0.1:8000/api/maintenanceSheet/steps/${id}`, data, { headers }).then((response) => {
             console.log(response);
         }).catch((error) => {
-            console.log(error)
+            // console.log(error)
         })
     }
 
@@ -109,7 +109,7 @@ const CommentStepModalForm = ( ids ) => {
                     }
                 }  
             }).catch((error) => {
-                console.log(error)
+                // console.log(error)
             })
         }
         fetchData(); 

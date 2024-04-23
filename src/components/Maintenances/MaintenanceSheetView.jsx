@@ -1,52 +1,52 @@
+/* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import Sidebar from '../Sidebar/Sidebar';
-import './css/MaintenanceSheetView.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faCircleCheck, faFilePen, faComment } from '@fortawesome/free-solid-svg-icons';
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import CommentStepModalForm from './CommentStepModalForm';
-import { formatDateTime } from '../../utils/functions/Library';
+import axios from 'axios'
+import Cookies from 'js-cookie'
+import Sidebar from '../Sidebar/Sidebar'
+import './css/MaintenanceSheetView.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck, faCircleCheck, faFilePen, faComment } from '@fortawesome/free-solid-svg-icons'
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import CommentStepModalForm from './CommentStepModalForm'
+import { formatDateTime } from '../../utils/functions/Library'
 
 const MaintenanceSheetView = () => {
 
-    const {id} = useParams();
-    const token = Cookies.get('token');
+    const {id} = useParams()
+    const token = Cookies.get('token')
     const headers = {
         'Authorization': 'Bearer '+ token
-    };
-    const [fms, setFms] = useState({});
-    const [role, setRole] = useState([]);
-    const [steps, setSteps] = useState([]);
-    const [needCommentStep, setNeedCommentStep] = useState(false);
-    const [stepIdForComment, setStepIdForComment] = useState('');
-    const [maintenanceIdForComment, setMaintenanceIdForComment] = useState('');
-    const [comments, setComments] = useState([]);
-
+    }
+    const [fms, setFms] = useState({})
+    const [role, setRole] = useState([])
+    const [steps, setSteps] = useState([])
+    const [needCommentStep, setNeedCommentStep] = useState(false)
+    const [stepIdForComment, setStepIdForComment] = useState('')
+    const [maintenanceIdForComment, setMaintenanceIdForComment] = useState('')
+    const [comments, setComments] = useState([])
 
     const computeFinalStatus = ( array ) => {
-        let value = '';
-        let done = 0;
-        let ongoing = 0;
-        let inerror = 0;
-        let inwaiting = 0;
-        let total = 0;
+        let value = ''
+        let done = 0
+        let ongoing = 0
+        let inerror = 0
+        let inwaiting = 0
+        let total = 0
         array.map((el) => {
             if (el.status === 'Fait') {
-                done += 1;
-                total += 1;
+                done += 1
+                total += 1
             } else if (el.status === 'En cours') {
-                ongoing += 1;
-                total += 1;
+                ongoing += 1
+                total += 1
             } else if (el.status === 'En erreur') {
-                inerror += 1;
-                total += 1;
+                inerror += 1
+                total += 1
             } else if (el.status === 'En attente') {
-                inwaiting += 1;
-                total += 1;
+                inwaiting += 1
+                total += 1
             }
         });
         if (inerror >= 1) {
@@ -74,7 +74,7 @@ const MaintenanceSheetView = () => {
                     }
                 }  
             }).catch((error) => {
-                console.log(error)
+                // console.log(error)
             })
         }
         fetchData();
@@ -92,7 +92,7 @@ const MaintenanceSheetView = () => {
                     }
                 }  
             }).catch((error) => {
-                console.log(error)
+                // console.log(error)
             })
         }
         fetchData(); 
@@ -108,7 +108,7 @@ const MaintenanceSheetView = () => {
                     }
                 }  
             }).catch((error) => {
-                console.log(error)
+                // console.log(error)
             })
         }
         fetchData()
@@ -125,14 +125,14 @@ const MaintenanceSheetView = () => {
             isValidate : isValidate,
         }
         await axios.patch(`http://127.0.0.1:8000/api/maintenanceSheet/${id}`, data, { headers }).then(() => {
-            window.location.reload();
+            window.location.reload()
         }).catch((error) => {
-            console.log(error)
+            // console.log(error)
         })
     }
 
     window.addEventListener('popstate', function() {
-        let isValidate = false;
+        let isValidate = false
         const finalMaintenaceStatus = computeFinalStatus(steps);
         if (finalMaintenaceStatus === 'Fait') {
             isValidate = true
@@ -142,17 +142,17 @@ const MaintenanceSheetView = () => {
             isValidate : isValidate,
         }
         axios.patch(`http://127.0.0.1:8000/api/maintenanceSheet/${id}`, data, { headers }).then(() => {
-            window.location.reload();
+            window.location.reload()
         }).catch((error) => {
-            console.log(error)
+            // console.log(error)
         })
     });
 
     // function which update the status step, this fu nction is call when an user done the step
     const commmentModalFormSteps = ( stepId, maintenanceId ) => {
-        setStepIdForComment(stepId);
-        setMaintenanceIdForComment(maintenanceId);
-        setNeedCommentStep(!needCommentStep);
+        setStepIdForComment(stepId)
+        setMaintenanceIdForComment(maintenanceId)
+        setNeedCommentStep(!needCommentStep)
     }
 
     const handleClickSteps = async ( stepId, status ) => {
@@ -162,11 +162,9 @@ const MaintenanceSheetView = () => {
         await axios.patch(`http://127.0.0.1:8000/api/maintenanceSheet/steps/${stepId}`, data, { headers }).then(() => {
             window.location.reload();
         }).catch((error) => {
-            console.log(error)
+            // console.log(error)
         })
     };
-
-    console.log(steps)
 
     return (
         <div className='container-sheet-view'>
