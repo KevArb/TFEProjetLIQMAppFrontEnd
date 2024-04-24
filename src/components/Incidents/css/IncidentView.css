@@ -2,8 +2,10 @@
     min-height: 100vh;
     width: 100%;
     display: grid;
-    grid-template-columns: 200px 500px 500px 1fr;
+    grid-template-columns: 200px  1fr;
     grid-template-rows: 100px 1fr;  
+    justify-content: center;
+
 }
 
 .sidebar {
@@ -18,7 +20,11 @@
 }
 
 .incident-grid {
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
     grid-template-columns: 200px 500px 500px 1fr;
     grid-template-rows: 100px 100px 1fr;
 }
@@ -54,8 +60,9 @@
 }
 
 .status-incident {
-    grid-column: 1;
-    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .form-comment-incident form {
@@ -65,7 +72,7 @@
 }
 
 .form-comment-incident form input {
-    width: 100%;
+    width: 300px;
     height: 150px;
     padding: 12px 20px;
     box-sizing: border-box;
@@ -81,19 +88,15 @@
 }
 
 .btn-actions {
-    grid-column: 3;
-    grid-row: 2;
+
 }
 
 .comments-incident {
-    grid-column: 1 / 5;
-    grid-row: 5;
+
 }
 
 .comments-view {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    margin-top: 50px;
+    width: 1000px    ;
 }
 
 .title-comment-view {
@@ -122,5 +125,11 @@
     height: 80px;   
 }
 
+.comment-cell {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    word-wrap: break-word;
+}
 
 

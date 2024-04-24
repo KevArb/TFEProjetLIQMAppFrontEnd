@@ -1,39 +1,53 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { useParams } from 'react-router-dom';
-import IncidentComment from './IncidentComment';
-import Sidebar from '../Sidebar/Sidebar';
-import IncidentCloseComment from './IncidentCloseComment';
-import './css/IncidentView.css';
-import { Button } from '@mui/material';
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import Cookies from 'js-cookie'
+import { useParams } from 'react-router-dom'
+import IncidentComment from './IncidentComment'
+import Sidebar from '../Sidebar/Sidebar'
+import IncidentCloseComment from './IncidentCloseComment'
+import './css/IncidentView.css'
+import { Button, TableContainer, TextField, TableHead, Table, TableRow, TableCell, TableBody } from '@mui/material'
+import { formatDateTime } from '../../utils/functions/Library'
+import ModalFormChangeStatusIncident from './ModalFormChangeStatusIncident'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMessage } from '@fortawesome/free-solid-svg-icons'
 
 const IncidentView = () => {
 
-    const token = Cookies.get('token');
+    const token = Cookies.get('token')
     const headers = {
         'Authorization': 'Bearer '+ token
     }
-    const {id} = useParams();
-    // const navigateTo = useNavigate();
+    const {id} = useParams()
+    // const navigateTo = useNavigate()
     
-    const [incident, setIncident] = useState({});
-    const [role, setRole] = useState([]);
-    const [commentForm, setCommentForm] = useState(false);
-    const [commentCloseForm, setCommentCloseForm] = useState(false);
-    const [comments, setComments] = useState([]);
+    const [incident, setIncident] = useState({})
+    const [role, setRole] = useState([])
+    const [commentForm, setCommentForm] = useState(false)
+    const [commentCloseForm, setCommentCloseForm] = useState(false)
+    const [comments, setComments] = useState([])
+    const [formUpdateStatus, setFormUpdateStatus] = useState(false)
     const [data, setData] = useState({
         comment: '',
-    });
+    })
+
+    const commentTypeIcon = (type) => {
+        if (type === 'Commentaire') {
+            <FontAwesomeIcon icon={faMessage} />
+        }
+    }
 
     const handleCommentForm = () => {
-        setCommentForm(!commentForm);
+        setCommentForm(!commentForm)
     }
     
-
     const handleCommentCloseForm = () => {
-        setCommentCloseForm(!commentCloseForm);
+        setCommentCloseForm(!commentCloseForm)
+    }
+
+    const handleUpdateForm = () => {
+        setFormUpdateStatus(!formUpdateStatus)
     }
 
     const handleOpenIncident = async () => {
@@ -119,25 +133,26 @@ const IncidentView = () => {
                 <div className='incident-grid'>
                     <div className='title-incident'>
                         <h1>{incident.title}</h1>
-                        <p>{incident.code}</p>
+                        <p>Incident N° : {incident.code}</p>
                     </div>
                     <div className='description-incident'>
                         <p>{incident.description}</p>
                     </div>
                     <div className='status-incident'>
-                        <p>{incident.status}</p>
-                        <p>{incident.impact}</p>
-                        <p>{incident.dateTimeOfIncident}</p>
+                        <div>{incident.status}</div>
+                        <div>{incident.impact}</div>
+                        <div>{formatDateTime(incident.dateTimeOfIncident)}</div>
                     </div>
                     <div className='form-comment-incident'>
                         <div className="form-view">
                             <form>
-                                <input id='comment-field' type="text" name='comment' value={data.comment} placeholder='Commentaire' onChange={handleChange}/>
+                                <TextField id='comment-field' type="text" name='comment' value={data.comment} placeholder='Commentaire' onChange={handleChange} multiline rows={6}/>
                                 <Button onClick={postComment}>Commenter</Button>
-                            </form> 
+                            </form>                            
                         </div>
                     </div> 
                     <div className="btn-actions">
+                    <Button onClick={handleUpdateForm}>Modifier Statut</Button>
                     {incident.status === 'Résolu' ?
                         <div></div> : <Button onClick={handleCommentForm}>Résolu</Button> }
                         {role === 'admin' ? <Button onClick={handleOpenIncident}>Réouvrir</Button> : <div></div>}
@@ -147,28 +162,52 @@ const IncidentView = () => {
                     </div> 
                     <div className="comments-incident">
                         <div className="comments-view">
-                            {/* <div className="title-comment-view">
-                                <h1>Commentaires</h1>
-                            </div> */}
-                                {comments.map((comment) => {
-                                    return(
-                                        <div className='comment-by-user' key={comment.id}>
-                                            <div className="comment-flex">
-                                                <div className='comment'>
-                                                    <p>{comment.comment}</p>
-                                                </div>
-                                                <div className='commentedBy'>
-                                                    <p>{comment.commentedBy.login}</p>
-                                                </div>
-                                                <div className='creattedAt'> 
-                                                    <p>{comment.createdAt}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                })}
+                            <h2>Historique</h2>
+                            <TableContainer>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>
+                                                Statut
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                Utilisateur
+                                            </TableCell>
+                                            <TableCell>
+                                                Commentaire
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                Le
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {comments?.map((comment) => {
+                                            return(
+                                                <TableRow key={comment.id}>
+                                                    <TableCell>
+                                                        {comment.commentType}  
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        <p>{comment.commentedBy.login}</p>
+                                                    </TableCell>
+                                                    <TableCell >
+                                                        <div className='comment-cell'>
+                                                            {comment.comment}
+                                                        </div>                                                       
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        <p>{formatDateTime(comment.createdAt)}</p>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                         </div>
                     </div>
+                    {formUpdateStatus ? <div><ModalFormChangeStatusIncident idIncident={id}/></div> : <div></div>}
                 </div>               
             </div>
         </div>

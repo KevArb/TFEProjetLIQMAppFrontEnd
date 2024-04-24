@@ -8,7 +8,7 @@ import Sidebar from '../Sidebar/Sidebar'
 import './css/MaintenanceSheetView.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faCircleCheck, faFilePen, faComment } from '@fortawesome/free-solid-svg-icons'
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import CommentStepModalForm from './CommentStepModalForm'
 import { formatDateTime } from '../../utils/functions/Library'
 
@@ -26,6 +26,7 @@ const MaintenanceSheetView = () => {
     const [stepIdForComment, setStepIdForComment] = useState('')
     const [maintenanceIdForComment, setMaintenanceIdForComment] = useState('')
     const [comments, setComments] = useState([])
+    const [openFormCloseMS, setOpenFormCloseMS] = useState(false)
 
     const computeFinalStatus = ( array ) => {
         let value = ''
@@ -115,8 +116,8 @@ const MaintenanceSheetView = () => {
     }, [])
 
     const handleConfirmMaintenanceSheet = async () => {
-        let isValidate = false;
-        const finalMaintenaceStatus = computeFinalStatus(steps);
+        let isValidate = false
+        const finalMaintenaceStatus = computeFinalStatus(steps)
         if (finalMaintenaceStatus === 'Fait') {
             isValidate = true
         } 
@@ -129,6 +130,26 @@ const MaintenanceSheetView = () => {
         }).catch((error) => {
             // console.log(error)
         })
+    }
+
+    //Discontiné
+    //if finalStatus is "Discontinué" => change steps of this MS to "Discontinué also or erreur" and block MS
+    const closeMS = () => {
+        setOpenFormCloseMS(!openFormCloseMS)
+    }
+
+    const handleCloseMS = async () => {
+        const finalMaintenaceStatus = computeFinalStatus(steps)
+        if (finalMaintenaceStatus === 'En erreur') {
+            const data = {
+                finalStatus : 'Discontinué',
+            }
+            await axios.patch(`http://127.0.0.1:8000/api/maintenanceSheet/${id}`, data, { headers }).then(() => {
+                window.location.reload()
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
     }
 
     window.addEventListener('popstate', function() {
@@ -210,14 +231,26 @@ const MaintenanceSheetView = () => {
                                     {/* <p>{step.description}</p> */}
                                 </div>
                             </div>   
-                        )
-                        
+                        )  
                     })}
                     <div className="confirm-maintenance-sheet">
-                        <Button onClick={handleConfirmMaintenanceSheet}>Valider</Button>
+                        { fms.finalStatus === 'Discontinué' || fms.finalStatus === 'Fait' ? 
+                        <div></div> : <div><Button onClick={handleConfirmMaintenanceSheet}>Valider</Button></div>
+                        }
                         {
-                            fms.finalStatus === 'En erreur' || fms.finalStatus === 'En attente'  ? <div><Button>Clôturer</Button></div> : <div></div>
-                        }     
+                            role === 'admin' ? 
+                            <div>
+                                {fms.finalStatus === 'En erreur' ? <div onClick={handleCloseMS}><Button>Discontinuer</Button></div> : <div></div>}     
+                            </div> :
+                            <div></div>
+                        }
+                        {/* <Dialog closeMS={openFormCloseMS}>
+                            <DialogTitle></DialogTitle>
+                            <DialogContent>
+                                
+                            </DialogContent>
+                            <DialogActions></DialogActions>
+                        </Dialog> */}
                     </div>
                     {comments ? <div><h1>Commentaires</h1></div> : <div></div>}
                     <div className='comment-section'>

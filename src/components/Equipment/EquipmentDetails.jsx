@@ -33,17 +33,33 @@ const EquipmentDetails = () => {
 
     const deleteEquipment = async () => {
         await axios.delete(`http://127.0.0.1:8000/api/equipment/${id}`).then(response => {
-            console.log(response)
+            
             if (response.status === 204) {
                 return navigateTo('/')
             }
         })
     }
 
+    const getUser = async (idUser) => {
+        await axios.get(`http://127.0.0.1:8000/api/user/${idUser}`, { headers }).then((response) => {
+            console.log('test')
+            console.log(response)
+        }).catch((error) => {
+            console.log(error)
+        }) 
+    }
+
+    const chipLabelCustom = (status) => {
+        // if (status === 'En cours') return <div><Chip label={status} className='chip-started'/></div>
+        if (status === 'En cours') return <div><Chip label={status} style={{backgroundColor:'#98C2A7'}}/></div>
+        if (status === 'En attente') return <div><Chip label={status} style={{backgroundColor:'#DEB7FF'}}/></div>
+        if (status === 'En erreur' || status === 'Haut') return <div><Chip label={status} style={{backgroundColor:'#e41e3f'}}/></div>
+        
+    }
+
     const newMaintenanceSheet = async (idMaintenance) => {
         try {
             await axios.post(`http://127.0.0.1:8000/api/maintenanceSheet/${idMaintenance}/newSheet`, { headers }).then((response) => {
-                console.log(response)
                 if (response.status === 201) {
                     window.location.reload();   
                 } 
@@ -64,8 +80,7 @@ const EquipmentDetails = () => {
                 if (typeof response.data === 'object') {
                     for (const key in response.data) {
                         const value = response.data.data[key]
-                        setEquipment(value) 
-                        console.log(value)        
+                        setEquipment(value)        
                     }
                 }       
             }).catch ((error) => {
@@ -80,7 +95,6 @@ const EquipmentDetails = () => {
     
     if (typeof equipment.incidents === 'object') {
         incidents = equipment.incidents
-        console.log(incidents)
     }
 
     if (typeof equipment.maintenances === 'object') {
@@ -91,7 +105,6 @@ const EquipmentDetails = () => {
     useEffect(() => {
         const fetchData = async () => { 
             await axios.get(`http://127.0.0.1:8000/api/equipment/${id}/maintenanceSheet/?isValidate=false`, { headers }).then((response) => {
-                console.log(response.data)
                 setMaintenanceSheets(response.data);
                 setRole(response.data.role)
                 if (typeof response.data === 'object') {
@@ -151,14 +164,14 @@ const EquipmentDetails = () => {
                                                         <p>{el.description}</p>
                                                     </div>
                                                     <div>
-                                                        <p>{formatDateTime(el.dateTimeOfIncident)}</p>
+                                                        <p>Crée par : {el.createdBy}</p>
                                                     </div>
                                                     <div>
-                                                        <p>{el.createdBy}</p>
+                                                        <p>{formatDateTime(el.dateTimeOfIncident)}</p>
                                                     </div>
                                                     <div className='incident-label'>                                                     
-                                                        <Chip label={el.impact} />
-                                                        <Chip label={el.status} />
+                                                        {chipLabelCustom(el.status)}
+                                                        {chipLabelCustom(el.impact)}
                                                     </div>                                
                                                 </div> 
                                             </div>
@@ -166,13 +179,11 @@ const EquipmentDetails = () => {
                                         </div>                                       
                                     )                   
                                 })}
-                                
                             </div>
                     </div>
 
                     <div className="equipment-maintenance">
                         <h2>Maintenances</h2>
-
                         <div>
                             {maintenances.map((el) => {
                                 return (
@@ -191,7 +202,6 @@ const EquipmentDetails = () => {
                         </div>
                     </div>
 
-
                     <div className="equipment-maintenance-start">
                         <h2>Maintenances en cours</h2>
                         <div>
@@ -201,22 +211,19 @@ const EquipmentDetails = () => {
                                             <div>
                                                 <p>{ms.name}</p>   
                                             </div>
-                                            <div>
-                                            </div>
+                                            
+                                                {chipLabelCustom(ms.finalStatus)}                                               
                                     </div>
                                 )
                             })}
                         </div>
-
                     </div>
-
                     <div className="equipment-details-action">
                         <ArchiveButton className='btn-action' equipment={equipment} />
                         {role === 'admin' ? <button className='btn-action' onClick={deleteEquipment}>Supprimer</button> : <div></div>}
                         <Link className='btn-action' to={`/equipment-details-update/${id}`}><button>Modifier</button></Link>
                     </div>
-                </div>
-                 
+                </div>                 
             </div>   
         </div>
     )

@@ -71,7 +71,7 @@ const EquipmentsList = () => {
                             <Card sx={{ maxWidth: 345 }} onClick={() => equipmentDetails(item.id)} className="equipment-card" key={item.id}>
                                 <CardHeader className="card-title"
                                     avatar ={
-                                        <Avatar>{item.code}</Avatar>
+                                        <Avatar>{item.code.charAt(0).toUpperCase()}</Avatar>
                                     }  
                                 />
                                 <CardContent className="equipment-detail-card">
