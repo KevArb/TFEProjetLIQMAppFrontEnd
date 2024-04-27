@@ -4,7 +4,7 @@ import axios from 'axios'
 import './css/EquipmentsCards.css'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../Sidebar/Sidebar'
-import { Avatar, Card, CardHeader, TextField, CardContent, CardActions, Typography, Chip, Select, MenuItem } from '@mui/material'
+import { Avatar, Card, CardHeader, TextField, CardContent, CardActions, Typography, Chip, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 import { headers } from '../../utils/functions/constLibrary'
 
 const EquipmentsList = () => { 
@@ -43,15 +43,41 @@ const EquipmentsList = () => {
         })
     }
 
-    const handleChangeSelect = (e) => {
+    const handleChangeSelect = (e) => { 
         const value = e.target.value
         setFilterFields({
             ...filterFields,
             [e.target.name]: value
+        })  
+    }
+    
+    const fieldsSearch = async () => {
+        let url = '?'
+        if (filterFields.supplier != '' && filterFields.supplier != 'default') url = url + 'supplier=' + filterFields.supplier + "&"
+        if (filterFields.category != '' && filterFields.category != 'default') url = url + 'category=' + filterFields.category + "&"
+        if (filterFields.service != '' && filterFields.service != 'default') url = url + 'service=' + filterFields.service + "&"        
+        await axios.get(`http://127.0.0.1:8000/api/equipment` + url, { headers }).then((response) => {
+            setItems(response.data)
+            if (typeof response.data === 'object') {
+                for (const key in response.data) {
+                    const value = response.data[key]
+                    setItems(value)   
+                    console.log(value)
+                }
+            }               
+        }).catch((error) => {
+            console.log(error)
         })
-        console.log(filterFields)
     }
 
+    useEffect(() => {
+        if (filterFields.supplier != '' 
+            || filterFields.category != '' 
+            || filterFields.service != '' ) {
+            fieldsSearch()
+        } 
+    }, [filterFields])  
+    
     useEffect(() => {
         const fetchSupplier = async () => {
             await axios.get('http://127.0.0.1:8000/api/supplier', { headers }).then((response) => {
@@ -103,49 +129,54 @@ const EquipmentsList = () => {
                         <TextField id='search-field' type="text" placeholder='Rechercher un équipement...' onChange={handleSearch} />
                     </div>
                     <div>
-                        <Select onChange={handleChangeSelect} 
-                                value={filterFields.service} 
-                                name='service' 
-                                id='select-card' 
-                                label='Service'>
-                            {services?.map((service) => {
-                                return (
-                                    <div key={service.id}>
-                                        <MenuItem value={service.id}>{service.name}</MenuItem>
-                                    </div>                                
-                                )     
-                            })}
-                        </Select>
+                        <FormControl fullWidth>
+                            <InputLabel id='select-card'>Service</InputLabel>
+                            <Select onChange={handleChangeSelect} 
+                                    name='service' 
+                                    id='select-card' 
+                                    label='Service' defaultValue='default'>
+                                <MenuItem value='default'><em>None</em></MenuItem> 
+                                {services?.map((service) => {
+                                    return (
+                                        <MenuItem key={service.id} value={service.id}>{service.name}</MenuItem>                         
+                                    )     
+                                })}
+                            </Select>
+                        </FormControl>
                     </div>
                     <div>
-                        <Select onChange={handleChangeSelect} 
-                                value={filterFields.supplier} 
-                                name='supplier' 
-                                id='select-card' 
-                                label='Fournisseur'>
-                            {suppliers?.map((supplier) => {
-                                return (
-                                    <div key={supplier.id}>
-                                        <MenuItem value={supplier.id || ''}>{supplier.nameCompagny}</MenuItem>
-                                    </div>                                
-                                )     
-                            })}
-                        </Select>
+                        <FormControl fullWidth>
+                            <InputLabel id='select-card'>Fournisseur</InputLabel>
+                            <Select onChange={handleChangeSelect} 
+                                    value={filterFields.supplier} 
+                                    name='supplier' 
+                                    id='select-card' 
+                                    label='Fournisseur' defaultValue='default'>
+                                <MenuItem value='default'><em>None</em></MenuItem> 
+                                {suppliers?.map((supplier) => {
+                                    return (
+                                        <MenuItem key={supplier.id} value={supplier.id}>{supplier.nameCompagny}</MenuItem>                            
+                                    )     
+                                })}
+                            </Select>
+                        </FormControl>
                     </div>
                     <div>
-                        <Select onChange={handleChangeSelect} 
-                                value={filterFields.category} 
-                                name='category' 
-                                id='select-card' 
-                                label='Catégorie'>
-                            {categories?.map((cat) => {
-                                return (
-                                    <div key={cat.id}>
-                                        <MenuItem value={cat.id}>{cat.name}</MenuItem>
-                                </div>                                
-                                )     
-                            })}
-                        </Select>
+                        <FormControl fullWidth>
+                            <InputLabel id='select-card'>Catégorie</InputLabel>
+                            <Select onChange={handleChangeSelect} 
+                                    value={filterFields.category} 
+                                    name='category' 
+                                    id='select-card' 
+                                    label='Catégorie' defaultValue='default'>
+                                <MenuItem value='default'><em>None</em></MenuItem> 
+                                {categories?.map((cat) => {
+                                    return (
+                                        <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>                              
+                                    )     
+                                })}
+                            </Select>
+                        </FormControl>
                     </div>
                 </div>
                 <div className="card-container">  
@@ -153,10 +184,7 @@ const EquipmentsList = () => {
                         return(
                             <Card sx={{ maxWidth: 345 }} onClick={() => equipmentDetails(item.id)} className="equipment-card" key={item.id}>
                                 <CardHeader className="card-title"
-                                    avatar ={
-                                        <Avatar>{item.code.charAt(0).toUpperCase()}</Avatar>
-                                    }  
-                                />
+                                    avatar ={ <Avatar>{item.code.charAt(0).toUpperCase()}</Avatar> }/>
                                 <CardContent className="equipment-detail-card">
                                     <h1>{item.name}</h1>
                                     <div>
