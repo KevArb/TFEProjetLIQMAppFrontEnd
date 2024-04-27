@@ -151,10 +151,13 @@ button:hover {
     transform: scale(1.1);
 }
 
-a .add-btn {
+.add-btn {
     text-decoration: none;
-    cursor: pointer;
-    
+    cursor: pointer;   
+}
+
+.add-btn:hover {
+    transform: scale(1.2);
 }
 
 .add-btn img{
@@ -192,4 +195,12 @@ a .add-btn {
 }
 .chip-error {
     color: red;
+}
+
+.equipment-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    grid-row: 5;
+    grid-column: 1 / 2,
 }

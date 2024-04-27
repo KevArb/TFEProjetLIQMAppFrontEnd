@@ -21,7 +21,6 @@ const ArchiveButton = ( equipment ) => {
         }
     })
 
-    console.log(data)
 
     const archiveBtnAction = async () => {
         // await axios.patch(`http://127.0.0.1:8000/api/equipment/${equipment.equipment.id}/archiveEquipment`, {

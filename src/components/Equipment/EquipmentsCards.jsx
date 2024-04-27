@@ -3,59 +3,95 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import './css/EquipmentsCards.css'
 import { useNavigate } from 'react-router-dom'
-import Cookies from 'js-cookie'
 import Sidebar from '../Sidebar/Sidebar'
-import { Avatar, Card, CardHeader, TextField, CardContent, CardActions, Typography, Chip } from '@mui/material'
+import { Avatar, Card, CardHeader, TextField, CardContent, CardActions, Typography, Chip, Select, MenuItem } from '@mui/material'
+import { headers } from '../../utils/functions/constLibrary'
 
 const EquipmentsList = () => { 
 
-    const token = Cookies.get('token');
-    const [items, setItems] = useState([]);
-    const [role, setRole] = useState([]);
-    const navigateTo = useNavigate();
-
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
+    const [items, setItems] = useState([])
+    const [role, setRole] = useState([])
+    const navigateTo = useNavigate()
+    const [services, setServices] = useState([])
+    const [suppliers, setSuppliers,] = useState([])
+    const [categories, setCategories] = useState([])
+    const [filterFields, setFilterFields] = useState({
+        supplier: '',
+        service: '',
+        category: ''
+    })
 
     const equipmentDetails = (itemId) => {
         return navigateTo(`/equipment-details/${itemId}`)
     }
 
     const handleSearch = (e) => {
-        const query = e.target.value;
-        setSearchQuery(query);
-        const filteredResults = searchResults.filter((result) =>
-          result.name.includes(query)
-        );
-        setSearchResults(filteredResults);
+        const query = e.target.value
+        itemData(query)
     }
-    
+
+    const itemData = async (searchQuery) => {
+        await axios.get(`http://127.0.0.1:8000/api/equipment?search=${searchQuery}`, { headers }).then((response) => {
+            setRole(response.data.role)
+            setItems(response.data)
+            if (typeof response.data === 'object') {
+                for (const key in response.data) {
+                    const value = response.data[key]
+                    setItems(value)
+                }
+            }               
+        })
+    }
+
+    const handleChangeSelect = (e) => {
+        const value = e.target.value
+        setFilterFields({
+            ...filterFields,
+            [e.target.name]: value
+        })
+        console.log(filterFields)
+    }
+
     useEffect(() => {
-        try {
-            axios.get("http://127.0.0.1:8000/api/equipment", {
-                headers: {'Authorization': 'Bearer '+ token}
-            }).then((response) => {
-                console.log(response)
+        const fetchSupplier = async () => {
+            await axios.get('http://127.0.0.1:8000/api/supplier', { headers }).then((response) => {
+                setSuppliers(response.data.data)
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+        const fetchServices = async () => {
+            await axios.get('http://127.0.0.1:8000/api/service', { headers }).then((response) => {
+                setServices(response.data.data)
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+        const fetchCat = async () => {
+            await axios.get('http://127.0.0.1:8000/api/equipmentCat', { headers }).then((response) => {
+                setCategories(response.data.data)
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+        const fetchData = async () => {
+            await axios.get(`http://127.0.0.1:8000/api/equipment`, { headers }).then((response) => {
                 setRole(response.data.role)
-                setItems(response.data);
+                setItems(response.data)
                 if (typeof response.data === 'object') {
                     for (const key in response.data) {
                         const value = response.data[key]
-                        setItems(value)
-                        
+                        setItems(value)   
                     }
-                }  
-                
-            }).catch(function () {
-                // console.log(error.response.status)
-                // console.log(error.response.data.message)
-                if (!token) {
-                    return navigateTo('/401')
-                }            
+                }               
+            }).catch((error) => {
+                console.log(error)
             })
-        } catch (error) {
-           console.log(error.response.data.message) 
         }
+        fetchSupplier()
+        fetchCat()
+        fetchServices()
+        fetchData()
     }, [])
 
     return (
@@ -63,7 +99,54 @@ const EquipmentsList = () => {
             <Sidebar userRole={role}/>
             <div className='main-container'> 
                 <div className='search-bar-container'>
-                    <TextField id='search-field' type="text" placeholder='Search...' onChange={handleSearch}/>
+                    <div>
+                        <TextField id='search-field' type="text" placeholder='Rechercher un équipement...' onChange={handleSearch} />
+                    </div>
+                    <div>
+                        <Select onChange={handleChangeSelect} 
+                                value={filterFields.service} 
+                                name='service' 
+                                id='select-card' 
+                                label='Service'>
+                            {services?.map((service) => {
+                                return (
+                                    <div key={service.id}>
+                                        <MenuItem value={service.id}>{service.name}</MenuItem>
+                                    </div>                                
+                                )     
+                            })}
+                        </Select>
+                    </div>
+                    <div>
+                        <Select onChange={handleChangeSelect} 
+                                value={filterFields.supplier} 
+                                name='supplier' 
+                                id='select-card' 
+                                label='Fournisseur'>
+                            {suppliers?.map((supplier) => {
+                                return (
+                                    <div key={supplier.id}>
+                                        <MenuItem value={supplier.id || ''}>{supplier.nameCompagny}</MenuItem>
+                                    </div>                                
+                                )     
+                            })}
+                        </Select>
+                    </div>
+                    <div>
+                        <Select onChange={handleChangeSelect} 
+                                value={filterFields.category} 
+                                name='category' 
+                                id='select-card' 
+                                label='Catégorie'>
+                            {categories?.map((cat) => {
+                                return (
+                                    <div key={cat.id}>
+                                        <MenuItem value={cat.id}>{cat.name}</MenuItem>
+                                </div>                                
+                                )     
+                            })}
+                        </Select>
+                    </div>
                 </div>
                 <div className="card-container">  
                     {items.map((item) => {

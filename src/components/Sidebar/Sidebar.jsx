@@ -10,7 +10,7 @@ import { faScrewdriverWrench, faToolbox, faSheetPlastic, faUser, faRightFromBrac
 
 const Sidebar = ( userRole ) => {
 
-    const navigateTo = useNavigate();
+    const navigateTo = useNavigate()
     const equipmentView = async () => {
         return navigateTo('/')
     };
@@ -35,21 +35,15 @@ const Sidebar = ( userRole ) => {
     return (
         <div className='sidebar'>
             <div className="top">
-                {/* <div onClick={equipmentView} className="logo">
-                    <img className='logo-img' src={assets.laboratory} alt="" />
-                </div> */}
                 <div onClick={equipmentView} className="bottom-item recent-entry">
-                    {/* <img src={assets.history_icon} alt="" /> */}
                     <FontAwesomeIcon icon={faScrewdriverWrench} size='2x'/>
                     <p className='txt'>Equipements</p> 
                 </div>
                 <div onClick={maintenanceListView } className="bottom-item recent-entry">
-                    {/* <img src={assets.setting_icon} alt="" /> */}
                     <FontAwesomeIcon icon={faToolbox} size='2x'/>
                     <p className='txt'>FM</p>
                 </div>
                 <div onClick={incidentsListView} className="bottom-item recent-entry">
-                    {/* <img src={assets.setting_icon} alt="" /> */}
                     <FontAwesomeIcon icon={faSheetPlastic} size='2x'/>
                     <p className='txt'>Incidents</p>
                 </div> 

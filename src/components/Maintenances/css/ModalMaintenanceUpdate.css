@@ -1,0 +1,27 @@
+.dialog-box {
+
+}
+
+.form-update-maintenance {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.step-view-update {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+#num-step {
+    width: 10px;
+}
+
+#title-step {
+    width: 300px;
+}
+
+#description-step {
+    width: 300px;
+}

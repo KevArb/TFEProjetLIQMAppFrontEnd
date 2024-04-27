@@ -5,31 +5,31 @@ import NewServiceForm from './NewServiceForm'
 import NewSupplierForm from './NewSupplierForm'
 import NewCategoryForm from './NewCategoryForm'
 import Cookies from 'js-cookie'
-import Sidebar from '../Sidebar/Sidebar';
-import './css/NewEquipment.css';
-import { Button, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import Sidebar from '../Sidebar/Sidebar'
+import './css/NewEquipment.css'
+import { Button, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 
 
 const NewEquipmentForm = () => {
 
-    const [suppliers, setSuppliers] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [services, setServices] = useState([]);
-    const [addServcie, setAddService] = useState(false);
-    const [addSupplier, setAddSupplier] = useState(false);
-    const [addCat, setAddCat] = useState(false);
-    const [role, setRole] = useState([]);
-    const token = Cookies.get('token');
-    const [errMsgName, setErrMsgName] = useState('');
-    const [errMsgCode, setErrMsgCode] = useState('');
-    const [errMsgSN, setErrMsgSN] = useState('');
-    const [errMsgSupplier, setErrMsgSupplier] = useState('');
-    const [errMsgService, setErrMsgService] = useState('');
-    const [errMsgCat, setErrMsgCat] = useState('');
+    const [suppliers, setSuppliers] = useState([])
+    const [categories, setCategories] = useState([])
+    const [services, setServices] = useState([])
+    const [addServcie, setAddService] = useState(false)
+    const [addSupplier, setAddSupplier] = useState(false)
+    const [addCat, setAddCat] = useState(false)
+    const [role, setRole] = useState([])
+    const token = Cookies.get('token')
+    const [errMsgName, setErrMsgName] = useState('')
+    const [errMsgCode, setErrMsgCode] = useState('')
+    const [errMsgSN, setErrMsgSN] = useState('')
+    const [errMsgSupplier, setErrMsgSupplier] = useState('')
+    const [errMsgService, setErrMsgService] = useState('')
+    const [errMsgCat, setErrMsgCat] = useState('')
 
-    const [image, setImage] = useState();
+    const [image, setImage] = useState()
 
     const addServiceForm = () => {
         setAddService(!addServcie)
@@ -57,29 +57,29 @@ const NewEquipmentForm = () => {
         supplier: '',
         service: '',
         category: '',
-    });
+    })
 
     const handleUploadImage = (e) => {
-        setImage(e.target.files[0]);
+        setImage(e.target.files[0])
     }
 
     const handleChange = (e) => {
-        const value = e.target.value;
+        const value = e.target.value
         setData({
           ...data,
           [e.target.name]: value
-        });
+        })
         console.log(value)
-    };
+    }
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); 
-        setErrMsgName('');
-        setErrMsgCode('');
-        setErrMsgSN('');
-        setErrMsgSupplier('');
-        setErrMsgService('');
-        setErrMsgCat('');
+        e.preventDefault() 
+        setErrMsgName('')
+        setErrMsgCode('')
+        setErrMsgSN('')
+        setErrMsgSupplier('')
+        setErrMsgService('')
+        setErrMsgCat('')
         const equipmentData = {
             name: data.name,
             code: data.code,
@@ -88,22 +88,22 @@ const NewEquipmentForm = () => {
             supplier: data.supplier,
             service: data.service,
             category: data.category,
-        };
+        }
         
         try {
             await axios.post('http://127.0.0.1:8000/api/equipment/newEquipment', equipmentData, { headers: {'Authorization': 'Bearer '+ token} }).then((response) => {
-                console.log(response);
-            });             
+                console.log(response)
+            })             
         } catch (error) {
-            if (data.name === '') setErrMsgName("Veuillez renseigner un nom d'équipement");
-            if (data.code === '') setErrMsgCode("Veuillez renseigner un code");
-            if (data.sn === '') setErrMsgSN("Veuillez renseigner un numéro de série");
-            if (data.supplier === '' || data.supplier == 'none') setErrMsgSupplier("Veuillez renseigner un fournisseur");
-            if (data.service === '' || data.service === 'none') setErrMsgService("Veuillez renseigner un service");
-            if (data.category === '' || data.category === 'none') setErrMsgCat("Veuillez renseigner une catégorie d'équipement");
+            if (data.name === '') setErrMsgName("Veuillez renseigner un nom d'équipement")
+            if (data.code === '') setErrMsgCode("Veuillez renseigner un code")
+            if (data.sn === '') setErrMsgSN("Veuillez renseigner un numéro de série")
+            if (data.supplier === '' || data.supplier == 'none') setErrMsgSupplier("Veuillez renseigner un fournisseur")
+            if (data.service === '' || data.service === 'none') setErrMsgService("Veuillez renseigner un service")
+            if (data.category === '' || data.category === 'none') setErrMsgCat("Veuillez renseigner une catégorie d'équipement")
         }
 
-    };
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -111,7 +111,7 @@ const NewEquipmentForm = () => {
                 await axios.get('http://127.0.0.1:8000/api/supplier', {
                     headers: {'Authorization': 'Bearer '+ token}
                 }).then((response) => {
-                    setRole(response.data.role);
+                    setRole(response.data.role)
                     if (typeof response.data === 'object') {
                         for (const key in response.data) {
                             const value = response.data[key]
@@ -123,7 +123,7 @@ const NewEquipmentForm = () => {
                 console.log(error)
             }
         }
-        fetchData();
+        fetchData()
     }, [])
 
     useEffect(() => {
@@ -143,7 +143,7 @@ const NewEquipmentForm = () => {
                 console.log(error)
             }
         }
-        fetchData();
+        fetchData()
     }, [])
 
     useEffect(() => {
@@ -163,7 +163,7 @@ const NewEquipmentForm = () => {
                 console.log(error)
             }
         }
-        fetchData();
+        fetchData()
     }, [])
 
     return (

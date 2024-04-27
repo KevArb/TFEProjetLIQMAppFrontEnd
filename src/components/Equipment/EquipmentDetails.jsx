@@ -7,21 +7,26 @@ import Cookies from 'js-cookie'
 import Sidebar from '../Sidebar/Sidebar'
 import ArchiveButton from './ArchiveButton'
 import { assets } from '../../assets/assets'
-import { Chip} from '@mui/material'
-import { formatDateTime } from '../../utils/functions/Library';
+import { Chip } from '@mui/material'
+import { formatDateTime } from '../../utils/functions/Library'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
+import ModalFormNewIncident from '../Incidents/ModalFormNewIncident'
 
 const EquipmentDetails = () => {
-    const token = Cookies.get('token');
+    const token = Cookies.get('token')
     const headers = {
         'Authorization': 'Bearer '+ token
     }
-    const {id} = useParams();
-    const [equipment, setEquipment] = useState([]);
-    const [maintenanceSheets, setMaintenanceSheets] = useState([]);
-    const [role, setRole] = useState([]);
-    let incidents = []
+    const {id} = useParams()
+    const [equipment, setEquipment] = useState([])
+    const [maintenanceSheets, setMaintenanceSheets] = useState([])
+    const [incidents, setIncidents] = useState([])
+    const [role, setRole] = useState([])
+    const [openNewIncodentForm, setOpenNewIncodentForm] = useState(false)
+
     let maintenances = []
-    const navigateTo = useNavigate();
+    const navigateTo = useNavigate()
 
     const showMaintenance = ( idMaintenance ) => {
         return navigateTo(`/${idMaintenance}/fm`)
@@ -29,6 +34,10 @@ const EquipmentDetails = () => {
 
     const showIncident = ( idIncident ) => {
         return navigateTo(`/${idIncident}/incident`)
+    }
+
+    const addNewIncident = () => {
+        setOpenNewIncodentForm(!openNewIncodentForm)
     }
 
     const deleteEquipment = async () => {
@@ -40,28 +49,23 @@ const EquipmentDetails = () => {
         })
     }
 
-    const getUser = async (idUser) => {
-        await axios.get(`http://127.0.0.1:8000/api/user/${idUser}`, { headers }).then((response) => {
-            console.log('test')
-            console.log(response)
-        }).catch((error) => {
-            console.log(error)
-        }) 
-    }
-
     const chipLabelCustom = (status) => {
-        // if (status === 'En cours') return <div><Chip label={status} className='chip-started'/></div>
+        // if (status === 'En cours') return <div><Chip label={status} className='chip-started'/></div> En attente d'une action
         if (status === 'En cours') return <div><Chip label={status} style={{backgroundColor:'#98C2A7'}}/></div>
         if (status === 'En attente') return <div><Chip label={status} style={{backgroundColor:'#DEB7FF'}}/></div>
-        if (status === 'En erreur' || status === 'Haut') return <div><Chip label={status} style={{backgroundColor:'#e41e3f'}}/></div>
-        
+        if (status === 'Clarification') return <div><Chip label={status} style={{backgroundColor:'#effba2'}}/></div>
+        if (status === "En attente d'une action") return <div><Chip label={status} style={{backgroundColor:'#DEB7FF'}}/></div>
+        if (status === 'Urgent') return <div><Chip label={status} style={{backgroundColor:'#ff2e0d'}}/></div>
+        if (status === 'Bas') return <div><Chip label={status} style={{backgroundColor:'#058beb'}}/></div>
+        if (status === 'Moyen') return <div><Chip label={status} style={{backgroundColor:'#DEB7FF'}}/></div>
+        if (status === 'En erreur' || status === 'Haut') return <div><Chip label={status} style={{backgroundColor:'#ffa600'}}/></div> 
     }
 
     const newMaintenanceSheet = async (idMaintenance) => {
         try {
             await axios.post(`http://127.0.0.1:8000/api/maintenanceSheet/${idMaintenance}/newSheet`, { headers }).then((response) => {
                 if (response.status === 201) {
-                    window.location.reload();   
+                    window.location.reload()   
                 } 
             }).catch((error) => {
                 console.log(error)
@@ -75,7 +79,7 @@ const EquipmentDetails = () => {
     useEffect(() => {
         const fetchData = async () => { 
             await axios.get(`http://127.0.0.1:8000/api/equipment/${id}`, { headers }).then((response) => {
-                setEquipment(response.data);
+                setEquipment(response.data)
                 setRole(response.data.role)
                 if (typeof response.data === 'object') {
                     for (const key in response.data) {
@@ -90,13 +94,9 @@ const EquipmentDetails = () => {
                 }
             })
         }
-        fetchData(); 
+        fetchData() 
     }, [])
     
-    if (typeof equipment.incidents === 'object') {
-        incidents = equipment.incidents
-    }
-
     if (typeof equipment.maintenances === 'object') {
         maintenances = equipment.maintenances
     }
@@ -105,7 +105,7 @@ const EquipmentDetails = () => {
     useEffect(() => {
         const fetchData = async () => { 
             await axios.get(`http://127.0.0.1:8000/api/equipment/${id}/maintenanceSheet/?isValidate=false`, { headers }).then((response) => {
-                setMaintenanceSheets(response.data);
+                setMaintenanceSheets(response.data)
                 setRole(response.data.role)
                 if (typeof response.data === 'object') {
                     for (const key in response.data) {
@@ -120,8 +120,26 @@ const EquipmentDetails = () => {
                 }
             })
         }
-        fetchData(); 
+        fetchData() 
     }, [])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await axios.get(`http://127.0.0.1:8000/api/equipment/${id}/incident/getIncidents/?isClosed=false`, { headers }).then((response) => {
+                if (typeof response.data === 'object') {
+                    for (const key in response.data) {
+                        const value = response.data.data[key]
+                        setIncidents(value)       
+                    }
+                } 
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+        fetchData()
+    }, [])
+
+    console.log(equipment)
     
     return (
         <div className='container'>
@@ -143,16 +161,22 @@ const EquipmentDetails = () => {
                         <label>Serial Number :</label>
                         <p>{equipment.serialNumber}</p>
                     </div>
-
+                    {/* <div className='equipment-contacts'>
+                        <h2>Contacts</h2>
+                        <p>Fournisseur : {equipment.supplier.nameCompagny}</p>
+                        <p>Mail : {equipment.supplier.hotlineMail}</p>
+                        <p>Téléphone : {equipment.supplier.hotlinePhoneNumber}</p> 
+                    </div> */}
                     <div className="equipment-incident">
                         <div className="header-incident">
                             <h2>Incident en cours</h2>
-                            <div className='add-btn'>
-                                <img className='add-img' src={assets.addIcon}></img>
-                            </div>
+                            <div>
+                                <FontAwesomeIcon onClick={addNewIncident} className='add-btn' icon={faCirclePlus} />
+                            </div>     
                         </div>
+                        {openNewIncodentForm ? <div><ModalFormNewIncident idEquipment={id} /></div> : null}
                         <div className="incidents-view">
-                                {incidents.map((el) => {
+                                {incidents?.map((el) => {
                                     return(
                                         <div key={el.id}>
                                             <div onClick={() => showIncident(el.id)} className='link-incident'>
@@ -164,7 +188,7 @@ const EquipmentDetails = () => {
                                                         <p>{el.description}</p>
                                                     </div>
                                                     <div>
-                                                        <p>Crée par : {el.createdBy}</p>
+                                                        <p>Crée par : {el.createdBy.login}</p>
                                                     </div>
                                                     <div>
                                                         <p>{formatDateTime(el.dateTimeOfIncident)}</p>
@@ -209,10 +233,11 @@ const EquipmentDetails = () => {
                                 return(
                                     <div onClick={() => showMaintenance(ms.id)} className="maintenace-view" key={ms.id}>
                                             <div>
-                                                <p>{ms.name}</p>   
+                                                <p>{ms.name}</p> 
+                                                <p>Démarrée par : {ms.startedBy.login}</p>
+                                                <p>le : {formatDateTime(ms.startedBy.createdAt)}</p>  
                                             </div>
-                                            
-                                                {chipLabelCustom(ms.finalStatus)}                                               
+                                            {chipLabelCustom(ms.finalStatus)}                                               
                                     </div>
                                 )
                             })}

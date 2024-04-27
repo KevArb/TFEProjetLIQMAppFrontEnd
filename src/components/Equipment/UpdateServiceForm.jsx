@@ -1,58 +1,54 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Checkbox } from '@mui/material';
-import Cookies from 'js-cookie';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Checkbox } from '@mui/material'
+import axios from 'axios'
+import { headers } from '../../utils/functions/constLibrary'
 
 const UpdateServiceForm = ( idService ) => {
   
-    const token = Cookies.get('token');
-    const headers = {
-        'Authorization': 'Bearer '+ token
-    }
-    const [service, setService] = useState([]);
-    const [open, setOpen] = useState(true);
+    const [service, setService] = useState([])
+    const [open, setOpen] = useState(true)
 
     const [data, setData] = useState({
         service: '',
         isUsed: true,
-    });
+    })
     
     const handleChange = (e) => {
-        const value = e.target.value;
+        const value = e.target.value
         setData({
           ...data,
           [e.target.name]: value,
-        });
+        })
         console.log(value)
-    };
+    }
 
     const handleCheck = () => {
         setData({
             ...data,
             isUsed : !data.isUsed
-        });        
-    };
+        })        
+    }
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
         const serviceData = {
             name: data.service,
             isUsed: data.isUsed,
-        };
+        }
         console.log(serviceData)
         await axios.patch(`http://127.0.0.1:8000/api/service/${idService.idService}`, serviceData, { headers }).then((response) => {
             if (response.status === 200) {
-                window.location.reload();
+                window.location.reload()
             }
         }).catch((error) => {
-            console.log(error);
+            console.log(error)
         })
     }
 
     const handleOpenModalForm = () => {
         setOpen(!open)
-        window.location.reload();
+        window.location.reload()
     }
     
     useEffect(() => {
@@ -64,10 +60,10 @@ const UpdateServiceForm = ( idService ) => {
                     isUsed : response.data.data.data.isUsed,
                 })
             }).catch((error) => {
-                console.log(error);
+                console.log(error)
             })
         }
-        fecthData();
+        fecthData()
     }, [])
 
     return (
