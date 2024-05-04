@@ -140,11 +140,11 @@
 }
 
 button {
-    width: 100px;
+    /* width: 100px;
     height: 20px;
     cursor: pointer;
     border-radius: 20px;
-    border: none;
+    border: none; */
 }
 
 button:hover {

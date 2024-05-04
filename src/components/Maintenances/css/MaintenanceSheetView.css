@@ -12,7 +12,7 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     margin-top: 200px;
     min-width: 900px;
@@ -82,6 +82,21 @@
 
 .error-msg {
     color: red;
+}
+
+.action-steps {
+    display: flex;
+    justify-content: flex-end;
+} 
+
+.current-step-status {
+    width: 85px;
+}
+
+.status-maintenance {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
 }
 
 

@@ -161,12 +161,6 @@ const EquipmentDetails = () => {
                         <label>Serial Number :</label>
                         <p>{equipment.serialNumber}</p>
                     </div>
-                    {/* <div className='equipment-contacts'>
-                        <h2>Contacts</h2>
-                        <p>Fournisseur : {equipment.supplier.nameCompagny}</p>
-                        <p>Mail : {equipment.supplier.hotlineMail}</p>
-                        <p>Téléphone : {equipment.supplier.hotlinePhoneNumber}</p> 
-                    </div> */}
                     <div className="equipment-incident">
                         <div className="header-incident">
                             <h2>Incident en cours</h2>
@@ -215,9 +209,11 @@ const EquipmentDetails = () => {
                                         <div>
                                             <p>{el.name}</p>
                                         </div>
-                                        <div className='add-btn' onClick={() => newMaintenanceSheet(el.id)}>
-                                            <img className='add-img' src={assets.addIcon}></img>
-                                        </div>
+                                        {/* <div className='add-btn' onClick={() => newMaintenanceSheet(el.id)}> */}
+                                        <div>
+                                            <FontAwesomeIcon onClick={() => newMaintenanceSheet(el.id)} className='add-btn' icon={faCirclePlus} />
+                                        </div>   
+                                        {/* </div> */}
                                         {/* <Link onClick={newMaintenanceSheet} to={'/{el.id}/newSheet'}>Start sheet</Link> */}
                                         
                                     </div>                                   
@@ -235,7 +231,7 @@ const EquipmentDetails = () => {
                                             <div>
                                                 <p>{ms.name}</p> 
                                                 <p>Démarrée par : {ms.startedBy.login}</p>
-                                                <p>le : {formatDateTime(ms.startedBy.createdAt)}</p>  
+                                                <p>le : {formatDateTime(ms.createdAt)}</p>  
                                             </div>
                                             {chipLabelCustom(ms.finalStatus)}                                               
                                     </div>

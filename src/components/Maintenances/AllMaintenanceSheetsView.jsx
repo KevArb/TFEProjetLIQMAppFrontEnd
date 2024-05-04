@@ -1,27 +1,27 @@
 // eslint-disable-next-line no-unused-vars
 import React, {useEffect, useState } from 'react'
-import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark, faTriangleExclamation, faCircleCheck, faClockRotateLeft } from '@fortawesome/free-solid-svg-icons'
 import Sidebar from '../Sidebar/Sidebar'
 import './css/ListSheets.css'
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody  } from '@mui/material'
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Dialog, DialogContent, Button, Select, MenuItem  } from '@mui/material'
 import {formatDateTime} from '../../utils/functions/Library'
+import { headers } from '../../utils/functions/constLibrary'
 
 const AllMaintenanceSheetsView = () => {
 
-    const token = Cookies.get('token')
-    const headers = {
-        'Authorization': 'Bearer '+ token
-    }
     const navigateTo = useNavigate()
     const [role, setRole] = useState([])
     const [maintenanceSheets, setMaintenanceSheets] = useState([])
     const showMaintenanceSheet = (idMaintenance) => {
         return navigateTo(`/${idMaintenance}/fm`)
     }
+
+    const [data, setData] = useState({
+        status: 'Toutes'
+    })
 
     const iconStatusMs = (data) => {
         if (data.finalStatus === 'Discontinué') {
@@ -40,6 +40,9 @@ const AllMaintenanceSheetsView = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            const dataFilter = {
+                finalStatus: data.status
+            }
             await axios.get(`http://127.0.0.1:8000/api/maintenanceSheet`, { headers }).then((response) => {
                 setMaintenanceSheets(response.data.data)
                 setRole(response.data.role)
@@ -50,9 +53,37 @@ const AllMaintenanceSheetsView = () => {
         fetchData()
     }, [])
 
+    const handleChangeStatusFilter = (e) => {
+        const value = e.target.value
+        setData({
+            ...data,
+            [e.target.name]: value
+        })
+
+    }
+    console.log(data)
+
     return (
         <div className='container-sheets-list'>
-            <Sidebar userRole={role}/>
+            <div>
+                <Sidebar userRole={role}/>
+            </div>
+            <div>
+                <Select name='status' onChange={handleChangeStatusFilter} defaultValue='Toutes'>
+                    <MenuItem value='Toutes'>Toutes</MenuItem>
+                    <MenuItem value='En cours'>En cours</MenuItem>
+                    <MenuItem value='En attente'>En attente</MenuItem>
+                    <MenuItem value='En erreur'>En erreur</MenuItem>
+                    <MenuItem value='Terminée'>Terminée</MenuItem>
+                    <MenuItem value='Discontinué'>Discontinué</MenuItem>
+                </Select>
+                <Button>Filtre</Button>
+                <Dialog open={!open}>
+                    <DialogContent>
+                        <p>Status</p>
+                    </DialogContent>
+                </Dialog>
+            </div>
             <TableContainer className='sheets-table'>
                 <Table className='table'>
                         <TableHead>

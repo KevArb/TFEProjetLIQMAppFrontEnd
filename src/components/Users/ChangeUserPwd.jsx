@@ -1,52 +1,74 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react';
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import { TextField,FormControl, Button, Dialog, DialogActions} from '@mui/material'
+import { headers } from '../../utils/functions/constLibrary'
 
 const ChangeUserPwd = () => {
 
-    const token = Cookies.get('token');
-    const headers = {
-        'Authorization': 'Bearer '+ token
-    };
+    const [open, setOpen] = useState(true)
     const [data, setData] = useState({
         oldPassword: '',
-        newPassword1: '',
-        newPassword2: ''
-    });
+        password: '',
+        passwordConfirm: ''
+    })
+
+    const [errMsgs, setErrMsgs] = useState([])
+
+    const closeModalForm = () => {
+        setOpen(!open)
+        window.location.reload()
+    }
 
     const handleChange = (e) => {
-        const value = e.target.value;
+        const value = e.target.value
         setData({
           ...data,
           [e.target.name]: value
-        });
-        console.log(value)
-    };
+        })
+    }
+
+    const correctPassword = async (data) => {
+        await axios.post(`http://127.0.0.1:8000/api/user/updatePassword`, data, { headers }).then((response) => {
+            console.log(response)
+        }).catch((error) => {
+            setErrMsgs(error.response.data.message.split("/"))
+        })
+    }
+
+    const updatePwd = async (data) => {
+        await axios.patch(`http://127.0.0.1:8000/api/user/updatePassword2`, data, { headers }).then((response) => {
+            console.log(response)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
 
     const handleChangePwd = async () => {
-        if (data.newPassword1 === data.newPassword2) {
-            const userData = {
-                password: data.oldPassword,
-                passwordConfirm: data.newPassword1,
-            };
-
-            await axios.patch(`http://127.0.0.1:8000/api/user/updatePassword`, userData, { headers }).then((response) => {
-                console.log(response)
-            }).catch((error) => {
-                console.log(error)
-            })
+        const reqData = {
+            oldPassword: data.oldPassword,
+            password: data.password,
+            passwordConfirm: data.passwordConfirm
         }
+        correctPassword(reqData)
+        updatePwd(reqData)   
     }
 
     return (
         <div>
-            <form>
-                <input type="password" name="oldPassword" value={data.oldPassword} placeholder='Ancien mot de passe' onChange={handleChange}/>
-                <input type="password" name="newPassword1" value={data.newPassword1} placeholder='Nouveau mot de passe' onChange={handleChange}/>
-                <input type="password" name="newPassword2" value={data.newPassword2} placeholder='Nouveau mot de passe' onChange={handleChange}/>
-                <button onClick={handleChangePwd}>Confirmer</button>
-            </form>
+            <FormControl fullWidth>
+                <Dialog open={open}>
+                    <TextField type="password" name="oldPassword" value={data.oldPassword} placeholder='Ancien mot de passe' onChange={handleChange}/>
+                    {errMsgs[0] ? <span>{errMsgs[0]}</span> : null}
+                    <TextField type="password" name="password" value={data.newPassword1} placeholder='Nouveau mot de passe' onChange={handleChange}/>
+                    <TextField type="password" name="passwordConfirm" value={data.newPassword2} placeholder='Nouveau mot de passe' onChange={handleChange}/>
+                    {errMsgs[1] ? <span>{errMsgs[1]}</span> : null}
+                    <Button onClick={handleChangePwd}>Confirmer</Button>
+                    <DialogActions>
+                        <Button onClick={closeModalForm}>Annuler</Button>
+                    </DialogActions>
+                </Dialog>
+            </FormControl>
         </div>
     )
 }

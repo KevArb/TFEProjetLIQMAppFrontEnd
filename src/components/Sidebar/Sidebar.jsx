@@ -1,27 +1,27 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState } from 'react';
-import './Sidebar.css';
-import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import NavAdmin from './NavAdmin';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faScrewdriverWrench, faToolbox, faSheetPlastic, faUser, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useState } from 'react'
+import './Sidebar.css'
+import { useNavigate } from 'react-router-dom'
+import Cookies from 'js-cookie'
+import NavAdmin from './NavAdmin'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faScrewdriverWrench, faToolbox, faSheetPlastic, faUser, faRightFromBracket} from '@fortawesome/free-solid-svg-icons'
+import { Avatar } from '@mui/material'
 
-
-const Sidebar = ( userRole ) => {
-
+const Sidebar = ( props ) => {
+    
     const navigateTo = useNavigate()
     const equipmentView = async () => {
         return navigateTo('/')
-    };
+    }
 
     const incidentsListView = () => {
         return navigateTo('/incidents')
-    };
+    }
 
     const maintenanceListView = () => {
         return navigateTo('/maintenance-sheet')
-    };
+    }
 
     const getProfileData = () => {
         return navigateTo('/profile')
@@ -30,11 +30,15 @@ const Sidebar = ( userRole ) => {
     const logOut = async () => {
         Cookies.remove('token')
         return navigateTo('/login')
-    };
+    }
 
     return (
         <div className='sidebar'>
             <div className="top">
+                <div className='user-section'>
+                    <Avatar alt="Remy Sharp" src="" />
+                    <h2>{props.user} </h2>  
+                </div>
                 <div onClick={equipmentView} className="bottom-item recent-entry">
                     <FontAwesomeIcon icon={faScrewdriverWrench} size='2x'/>
                     <p className='txt'>Equipements</p> 
@@ -48,7 +52,7 @@ const Sidebar = ( userRole ) => {
                     <p className='txt'>Incidents</p>
                 </div> 
             </div>  
-            {userRole.userRole === 'admin' || userRole.userRole === 'manager' ? <div><NavAdmin /></div> : <div></div>} 
+            {props.userRole === 'admin' || props.userRole === 'manager' ? <div><NavAdmin/></div> : <div></div>} 
             <div className="bottom">
                 <div onClick={getProfileData} className="bottom-item recent-entry">
                     <FontAwesomeIcon icon={faUser} size='2x'/>

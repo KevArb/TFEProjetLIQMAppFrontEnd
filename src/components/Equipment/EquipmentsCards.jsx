@@ -4,17 +4,28 @@ import axios from 'axios'
 import './css/EquipmentsCards.css'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../Sidebar/Sidebar'
-import { Avatar, Card, CardHeader, TextField, CardContent, CardActions, Typography, Chip, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
+import {    Avatar, Card, CardHeader, TextField, CardContent, CardActions, Typography, 
+            Table, Chip, TableHead, Select, MenuItem, FormControl, 
+            InputLabel, Button, TableContainer, TableRow, TableCell, TableBody, 
+            Checkbox, FormControlLabel} from '@mui/material'
 import { headers } from '../../utils/functions/constLibrary'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faList, faTableCellsLarge, faBoxArchive } from '@fortawesome/free-solid-svg-icons';
+
+
 
 const EquipmentsList = () => { 
 
     const [items, setItems] = useState([])
-    const [role, setRole] = useState([])
+    const [role, setRole] = useState('')
+    const [user, setUser] = useState([])
     const navigateTo = useNavigate()
     const [services, setServices] = useState([])
     const [suppliers, setSuppliers,] = useState([])
     const [categories, setCategories] = useState([])
+    const [listView, setListView] = useState(false)
+    const [isNotUsed, setIsNotUsed] = useState(false)
+    const [search, setSearch] = useState('')
     const [filterFields, setFilterFields] = useState({
         supplier: '',
         service: '',
@@ -27,20 +38,8 @@ const EquipmentsList = () => {
 
     const handleSearch = (e) => {
         const query = e.target.value
+        setSearch(query)
         itemData(query)
-    }
-
-    const itemData = async (searchQuery) => {
-        await axios.get(`http://127.0.0.1:8000/api/equipment?search=${searchQuery}`, { headers }).then((response) => {
-            setRole(response.data.role)
-            setItems(response.data)
-            if (typeof response.data === 'object') {
-                for (const key in response.data) {
-                    const value = response.data[key]
-                    setItems(value)
-                }
-            }               
-        })
     }
 
     const handleChangeSelect = (e) => { 
@@ -48,11 +47,92 @@ const EquipmentsList = () => {
         setFilterFields({
             ...filterFields,
             [e.target.name]: value
-        })  
+        })     
+    }
+
+    const handlelistView = () => {
+        setListView(!listView)
+    }
+
+    const resetPage = () => {
+        window.location.reload()
+    }
+
+    const showIsNotUsed = () => {
+        setIsNotUsed(!isNotUsed)
+        console.log(search)
+        itemData(search)
+    }
+
+    const itemData = async (searchQuery) => {
+        let url = '?'
+        if (filterFields.supplier != '' && filterFields.supplier != 'default') url = url + 'supplier=' + filterFields.supplier + "&"
+        if (filterFields.category != '' && filterFields.category != 'default') url = url + 'category=' + filterFields.category + "&"
+        if (filterFields.service != '' && filterFields.service != 'default') url = url + 'service=' + filterFields.service + "&"
+
+        // init when empty field
+        if (url === '?' && !searchQuery) {
+            console.log('quand init champ vide')
+            let urlAPI = `http://127.0.0.1:8000/api/equipment?isUsed=true&search=${searchQuery}`
+            console.log(isNotUsed)
+            if (isNotUsed) {
+                urlAPI = `http://127.0.0.1:8000/api/equipment?search=${searchQuery}`
+            } 
+            await axios.get(urlAPI, { headers }).then((response) => {
+                setRole(response.data.role)
+                setItems(response.data)
+                if (typeof response.data === 'object') {
+                    for (const key in response.data) {
+                        const value = response.data[key]
+                        setItems(value)
+                    }
+                }               
+            })
+        } else {
+            if (searchQuery === '') {
+                console.log('champ vide mais a été modfiié')
+                let urlAPI = `http://127.0.0.1:8000/api/equipment?isUsed=true`
+                console.log(isNotUsed)
+                if (!isNotUsed) {
+                    urlAPI = `http://127.0.0.1:8000/api/equipment`
+                } 
+                url = url.replace('?', '')
+                await axios.get(urlAPI + url, { headers }).then((response) => {
+                    setRole(response.data.role)
+                    setItems(response.data)
+                    if (typeof response.data === 'object') {
+                        for (const key in response.data) {
+                            const value = response.data[key]
+                            setItems(value)
+                        }
+                    }               
+                })
+            } else {
+                console.log('champ pas vide')
+                url = url.replace('?', '')
+                let urlAPI = `http://127.0.0.1:8000/api/equipment?isUsed=true&search=${searchQuery}`
+                console.log(isNotUsed)
+                if (isNotUsed) {
+                    urlAPI = `http://127.0.0.1:8000/api/equipment?search=${searchQuery}`
+                } 
+                console.log(urlAPI)
+                await axios.get(urlAPI + `&` + url, { headers }).then((response) => {
+                    setRole(response.data.role)
+                    setItems(response.data)
+                    if (typeof response.data === 'object') {
+                        for (const key in response.data) {
+                            const value = response.data[key]
+                            setItems(value)
+                        }
+                    }               
+                })
+            }
+        }
     }
     
     const fieldsSearch = async () => {
         let url = '?'
+        console.log('uniquement via menu déroulant')
         if (filterFields.supplier != '' && filterFields.supplier != 'default') url = url + 'supplier=' + filterFields.supplier + "&"
         if (filterFields.category != '' && filterFields.category != 'default') url = url + 'category=' + filterFields.category + "&"
         if (filterFields.service != '' && filterFields.service != 'default') url = url + 'service=' + filterFields.service + "&"        
@@ -62,7 +142,6 @@ const EquipmentsList = () => {
                 for (const key in response.data) {
                     const value = response.data[key]
                     setItems(value)   
-                    console.log(value)
                 }
             }               
         }).catch((error) => {
@@ -73,37 +152,43 @@ const EquipmentsList = () => {
     useEffect(() => {
         if (filterFields.supplier != '' 
             || filterFields.category != '' 
-            || filterFields.service != '' ) {
+            || filterFields.service != '') {
             fieldsSearch()
         } 
     }, [filterFields])  
     
     useEffect(() => {
         const fetchSupplier = async () => {
-            await axios.get('http://127.0.0.1:8000/api/supplier', { headers }).then((response) => {
+            await axios.get(`http://127.0.0.1:8000/api/supplier?isUsed=true`, { headers }).then((response) => {
                 setSuppliers(response.data.data)
             }).catch((error) => {
                 console.log(error)
             })
         }
         const fetchServices = async () => {
-            await axios.get('http://127.0.0.1:8000/api/service', { headers }).then((response) => {
+            await axios.get(`http://127.0.0.1:8000/api/service?isUsed=true`, { headers }).then((response) => {
                 setServices(response.data.data)
             }).catch((error) => {
                 console.log(error)
             })
         }
         const fetchCat = async () => {
-            await axios.get('http://127.0.0.1:8000/api/equipmentCat', { headers }).then((response) => {
+            await axios.get(`http://127.0.0.1:8000/api/equipmentCat?isUsed=true`, { headers }).then((response) => {
                 setCategories(response.data.data)
             }).catch((error) => {
                 console.log(error)
             })
         }
         const fetchData = async () => {
-            await axios.get(`http://127.0.0.1:8000/api/equipment`, { headers }).then((response) => {
+            let urlAPI = `http://127.0.0.1:8000/api/equipment`
+            if (!isNotUsed) {
+                urlAPI = `http://127.0.0.1:8000/api/equipment?isUsed=true`
+            } 
+            await axios.get(urlAPI, { headers }).then((response) => {
                 setRole(response.data.role)
+                setUser(response.data.login)
                 setItems(response.data)
+                setIsNotUsed(isNotUsed)
                 if (typeof response.data === 'object') {
                     for (const key in response.data) {
                         const value = response.data[key]
@@ -118,15 +203,20 @@ const EquipmentsList = () => {
         fetchCat()
         fetchServices()
         fetchData()
-    }, [])
-
+    }, [role, isNotUsed])
+    
     return (
         <div className='container'> 
-            <Sidebar userRole={role}/>
+            <Sidebar userRole={role} user={user}/>
             <div className='main-container'> 
                 <div className='search-bar-container'>
                     <div>
                         <TextField id='search-field' type="text" placeholder='Rechercher un équipement...' onChange={handleSearch} />
+                        { role === 'admin' || role === 'manager' ? 
+                            <div>
+                                <label>Afficher archives</label>
+                                <FormControlLabel control={ <Checkbox onClick={showIsNotUsed} name='isUsed' checked={isNotUsed}/> } />
+                            </div> : null}
                     </div>
                     <div>
                         <FormControl fullWidth>
@@ -178,9 +268,23 @@ const EquipmentsList = () => {
                             </Select>
                         </FormControl>
                     </div>
+                    <div className='action-filter'>
+                        <div>
+                            <Button onClick={resetPage}>Reset</Button>
+                        </div>
+                        {!listView ? 
+                            <div> 
+                                <FontAwesomeIcon id="btn-list" onClick={handlelistView} icon={faList} size='2x'/>
+                            </div> : 
+                            <div>
+                                <FontAwesomeIcon id="btn-list" onClick={handlelistView} icon={faTableCellsLarge} size='2x'/>
+                            </div>}    
+                    </div>
                 </div>
                 <div className="card-container">  
-                    {items.map((item) => {
+                {/*  Equipments cards display */} 
+                {!listView ? <div className="card-container">
+                    {items?.map((item) => {
                         return(
                             <Card sx={{ maxWidth: 345 }} onClick={() => equipmentDetails(item.id)} className="equipment-card" key={item.id}>
                                 <CardHeader className="card-title"
@@ -198,7 +302,10 @@ const EquipmentsList = () => {
                                     </div>
                                     <div>
                                         <Typography variant="body2">{item.supplier.nameCompagny}</Typography>
-                                    </div>  
+                                    </div> 
+                                    <div>
+                                        {!item.isUsed ? <div> <FontAwesomeIcon icon={faBoxArchive} /></div> : <div></div>}
+                                    </div> 
                                 </CardContent>
                                 <CardActions>
                                     <Chip label={item.category.name} />
@@ -207,8 +314,42 @@ const EquipmentsList = () => {
                             </Card>                          
                         )
                     })}
-                </div>
-            </div> 
+                    </div> : 
+                    <div className="list-container">
+                        {/* Equipment List Display  */}
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell colSpan={3}>Equipement</TableCell>
+                                        <TableCell colSpan={1}>Code</TableCell>
+                                        <TableCell colSpan={1}>SN</TableCell>
+                                        <TableCell colSpan={1}>Service</TableCell>
+                                        <TableCell colSpan={1}>Catégorie</TableCell>
+                                        <TableCell colSpan={1}>Fournisseur</TableCell>
+                                        <TableCell colSpan={1}>isUsed</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>      
+                                    {items?.map((item) => {
+                                        return(
+                                            <TableRow className="equipment-detail-list" key={item.id} onClick={() => equipmentDetails(item.id)}>
+                                                <TableCell colSpan={3}>{item.name}</TableCell>
+                                                <TableCell colSpan={1}>{item.code}</TableCell>
+                                                <TableCell colSpan={1}>{item.serialNumber}</TableCell>
+                                                <TableCell colSpan={1}>{item.service.name}</TableCell>
+                                                <TableCell colSpan={1}>{item.category.name}</TableCell>
+                                                <TableCell colSpan={1}>{item.supplier.nameCompagny}</TableCell>
+                                                <TableCell colSpan={1}><Checkbox checked={item.isUsed} disabled/></TableCell>
+                                            </TableRow>
+                                        )
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>}
+                </div>   
+            </div>
         </div>
     )
 }

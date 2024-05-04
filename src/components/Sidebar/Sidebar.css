@@ -71,3 +71,10 @@
     cursor: pointer;
 }
 
+.user-section {
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+

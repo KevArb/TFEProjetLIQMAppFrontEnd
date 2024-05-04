@@ -54,6 +54,7 @@ const CommentStepModalForm = ( ids ) => {
             reasonComment: data.reasonComment,
             step: id,
             maintenanceSheet: idMaintenance,
+            commentedAt: Date.now(),
         }
         return await axios.post(`http://127.0.0.1:8000/api/maintenanceSheet/steps/comment/`, commentData, { headers }).then((response) => {
             console.log(response);
