@@ -1,9 +1,11 @@
 .container {
-    /* min-height: 100vh;
-    width: 100%; */
-    display: grid;
+    min-height: 100vh;
+    width: 100%;
+    /* display: grid;
     grid-template-columns: 300px 1fr;
-    grid-template-rows: 100px 200px 200px 200px 100px 1fr;   
+    grid-template-rows: 100px 200px 200px 200px 100px 1fr;    */
+    display: flex;
+    flex-direction: row;
 }
 
 .sidebar {
@@ -18,14 +20,14 @@
 .main-container .search-bar-container {
     grid-column: 3 / 4;
     grid-row: 1;
-    margin-left: 60px;
-
+    margin-left: 400px;
 }
 
 .search-bar-container {
     display: flex;
     flex-direction: row;
     gap: 25px;
+   
 }
 
 .search-bar-container  #select-card {
@@ -40,22 +42,26 @@
 }
 
 .main-container {
-    grid-column: 2;
-    grid-row: 2 / 5; 
+    /* grid-column: 2;
+    grid-row: 2 / 5;  */
+    display: flex;
+    flex-direction: column;
 }
 
 .card-container {
     width: 500px;
+    grid-column: 2;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 5px;
     grid-auto-rows: minmax(100px, auto);
     min-width: 600px;
+    margin-left: 160px;
 }
 
 .main-container .equipment-card {
     min-width: 300px;
-    min-height: 400px;
+    min-height: 300px;
     /* margin: 20px; */
     /* padding: 10px; */
     background-color: #f0f4f9;
@@ -108,6 +114,7 @@
     justify-content: center;
     /* grid-template-rows: 200px 1fr;  */
     margin: 55px;
+    margin-left: 170px;
 }
 
 .equipment-detail-list:hover {

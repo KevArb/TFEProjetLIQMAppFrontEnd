@@ -48,6 +48,8 @@ const ModalFormChangeStatusIncident = ( idIncident ) => {
         console.log(dataForm)
         await axios.post(`http://127.0.0.1:8000/api/incident/${idIncident.idIncident}/commentIncident`, dataForm, { headers }).then((response) => {
             console.log(response.data)
+            window.location.reload()
+
         }).catch((error) => {
             console.log(error)
         })

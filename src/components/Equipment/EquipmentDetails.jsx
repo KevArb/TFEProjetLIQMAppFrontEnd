@@ -3,21 +3,17 @@ import React, { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import './css/EquipmentDetail.css'
 import axios from 'axios'
-import Cookies from 'js-cookie'
 import Sidebar from '../Sidebar/Sidebar'
 import ArchiveButton from './ArchiveButton'
-import { assets } from '../../assets/assets'
 import { Chip } from '@mui/material'
 import { formatDateTime } from '../../utils/functions/Library'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 import ModalFormNewIncident from '../Incidents/ModalFormNewIncident'
+import { headers } from '../../utils/functions/constLibrary'
 
 const EquipmentDetails = () => {
-    const token = Cookies.get('token')
-    const headers = {
-        'Authorization': 'Bearer '+ token
-    }
+
     const {id} = useParams()
     const [equipment, setEquipment] = useState([])
     const [maintenanceSheets, setMaintenanceSheets] = useState([])
@@ -50,11 +46,11 @@ const EquipmentDetails = () => {
     }
 
     const chipLabelCustom = (status) => {
-        // if (status === 'En cours') return <div><Chip label={status} className='chip-started'/></div> En attente d'une action
         if (status === 'En cours') return <div><Chip label={status} style={{backgroundColor:'#98C2A7'}}/></div>
         if (status === 'En attente') return <div><Chip label={status} style={{backgroundColor:'#DEB7FF'}}/></div>
         if (status === 'Clarification') return <div><Chip label={status} style={{backgroundColor:'#effba2'}}/></div>
         if (status === "En attente d'une action") return <div><Chip label={status} style={{backgroundColor:'#DEB7FF'}}/></div>
+        if (status === "Clôturé") return <div><Chip label={status} style={{backgroundColor:'#DEB7FF'}}/></div>
         if (status === 'Urgent') return <div><Chip label={status} style={{backgroundColor:'#ff2e0d'}}/></div>
         if (status === 'Bas') return <div><Chip label={status} style={{backgroundColor:'#058beb'}}/></div>
         if (status === 'Moyen') return <div><Chip label={status} style={{backgroundColor:'#DEB7FF'}}/></div>
@@ -75,9 +71,8 @@ const EquipmentDetails = () => {
         }
     }
     
-    // Fetch equipment data
     useEffect(() => {
-        const fetchData = async () => { 
+        const fetchEquipmentData = async () => { 
             await axios.get(`http://127.0.0.1:8000/api/equipment/${id}`, { headers }).then((response) => {
                 setEquipment(response.data)
                 setRole(response.data.role)
@@ -94,16 +89,8 @@ const EquipmentDetails = () => {
                 }
             })
         }
-        fetchData() 
-    }, [])
-    
-    if (typeof equipment.maintenances === 'object') {
-        maintenances = equipment.maintenances
-    }
 
-    // fetch maintenance sheets data 
-    useEffect(() => {
-        const fetchData = async () => { 
+        const fetchMaintennaceSheetsData = async () => { 
             await axios.get(`http://127.0.0.1:8000/api/equipment/${id}/maintenanceSheet/?isValidate=false`, { headers }).then((response) => {
                 setMaintenanceSheets(response.data)
                 setRole(response.data.role)
@@ -120,11 +107,8 @@ const EquipmentDetails = () => {
                 }
             })
         }
-        fetchData() 
-    }, [])
 
-    useEffect(() => {
-        const fetchData = async () => {
+        const fetchIncidentData = async () => {
             await axios.get(`http://127.0.0.1:8000/api/equipment/${id}/incident/getIncidents/?isClosed=false`, { headers }).then((response) => {
                 if (typeof response.data === 'object') {
                     for (const key in response.data) {
@@ -136,22 +120,27 @@ const EquipmentDetails = () => {
                 console.log(error)
             })
         }
-        fetchData()
-    }, [])
 
-    console.log(equipment)
+        fetchEquipmentData()
+        fetchIncidentData()
+        fetchMaintennaceSheetsData()
+    }, [id])
+
+    if (typeof equipment.maintenances === 'object') {
+        maintenances = equipment.maintenances
+    }
     
     return (
-        <div className='container'>
+        <div className='container-detail'>
             <Sidebar userRole={role}/>
             <div className="container-equipment">
                 <div className="equipment-card">
                     <div className="equipment-title">
                         <h1>{equipment.name}</h1>
                     </div>
-                    <div className="equipment-img">
+                    {/* <div className="equipment-img">
                         <img src={assets.dummy} alt="" />
-                    </div>
+                    </div> */}
                     <div className="equipment-details">
                         <h2>Détails : </h2>
                         <label>Code :</label>

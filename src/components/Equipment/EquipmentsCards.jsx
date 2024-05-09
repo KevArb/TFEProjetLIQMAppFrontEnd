@@ -12,8 +12,6 @@ import { headers } from '../../utils/functions/constLibrary'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faList, faTableCellsLarge, faBoxArchive } from '@fortawesome/free-solid-svg-icons';
 
-
-
 const EquipmentsList = () => { 
 
     const [items, setItems] = useState([])
@@ -194,7 +192,8 @@ const EquipmentsList = () => {
                         const value = response.data[key]
                         setItems(value)   
                     }
-                }               
+                }
+                             
             }).catch((error) => {
                 console.log(error)
             })
@@ -207,7 +206,9 @@ const EquipmentsList = () => {
     
     return (
         <div className='container'> 
-            <Sidebar userRole={role} user={user}/>
+            <div>
+                <Sidebar userRole={role} user={user}/>   
+            </div>
             <div className='main-container'> 
                 <div className='search-bar-container'>
                     <div>

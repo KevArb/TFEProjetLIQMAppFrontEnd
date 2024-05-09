@@ -1,16 +1,14 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
-import Cookies from 'js-cookie';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { Dialog, DialogActions, DialogContent, Button, TextField, DialogTitle } from '@mui/material';
+import { headers } from '../../utils/functions/constLibrary';
 
 const IncidentCloseComment = () => {
-    const token = Cookies.get('token');
-    const headers = {
-        'Authorization': 'Bearer '+ token
-    }
 
     const {id} = useParams();
+    const [open, setOpen] = useState(true)
     const [data, setData] = useState({
         comment: '',
     });
@@ -21,7 +19,6 @@ const IncidentCloseComment = () => {
           ...data,
           [e.target.name]: value 
         });
-        console.log(value)
     };
 
     const resolveIncident = async () => {
@@ -39,9 +36,15 @@ const IncidentCloseComment = () => {
         })
     }
 
+    const closeModalForm = () => {
+        // setOpen(!open)
+        window.location.reload()
+    }
+
     const handleCLoseIncident = async () => {
         const status = {
-            status: 'Clôturé'
+            status: 'Clôturé',
+            isClosed: true,
         }
         await axios.patch(`http://127.0.0.1:8000/api/incident/${id}`, status, { headers }).then((response) => {
             console.log(response)
@@ -56,11 +59,10 @@ const IncidentCloseComment = () => {
             comment: data.comment,
             status: 'Clôture',
         };
-        console.log(data)
         await axios.post(`http://127.0.0.1:8000/api/incident/${id}/commentIncident`, comment, { headers }).then((response) => {
-            console.log(response)
             if (response.status === 200) {
-                resolveIncident();
+                resolveIncident()
+                window.location.reload()
             }
         }).catch((error) => {
             console.log(error)
@@ -70,11 +72,16 @@ const IncidentCloseComment = () => {
     return (
         <div>
             <div className='modal-form-comment' >
-                <form>
-                    <input type="text" name='comment' placeholder='Commentaire' value={data.comment} onChange={handleChange} />
-                    <button onClick={postComment}>Confirmer</button>
-                    <button>Annuler</button>
-                </form>
+                <Dialog open={open}>
+                    <DialogTitle>Clôture</DialogTitle>
+                    <DialogContent>
+                    <TextField type="text" name='comment' value={data.comment} placeholder='Commentaire' onChange={handleChange} multiline rows={6}/> 
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={postComment}>Confirmer</Button>
+                        <Button onClick={closeModalForm}>Annuler</Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         </div>
     )

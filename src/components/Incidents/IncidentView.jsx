@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import Cookies from 'js-cookie'
 import { useParams } from 'react-router-dom'
 import IncidentComment from './IncidentComment'
 import Sidebar from '../Sidebar/Sidebar'
@@ -10,33 +9,23 @@ import './css/IncidentView.css'
 import { Button, TableContainer, TextField, TableHead, Table, TableRow, TableCell, TableBody } from '@mui/material'
 import { formatDateTime } from '../../utils/functions/Library'
 import ModalFormChangeStatusIncident from './ModalFormChangeStatusIncident'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMessage } from '@fortawesome/free-solid-svg-icons'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faMessage } from '@fortawesome/free-solid-svg-icons'
+import { headers } from '../../utils/functions/constLibrary'
 
 const IncidentView = () => {
 
-    const token = Cookies.get('token')
-    const headers = {
-        'Authorization': 'Bearer '+ token
-    }
-    const {id} = useParams()
-    // const navigateTo = useNavigate()
-    
+    const {id} = useParams()    
     const [incident, setIncident] = useState({})
     const [role, setRole] = useState([])
     const [commentForm, setCommentForm] = useState(false)
     const [commentCloseForm, setCommentCloseForm] = useState(false)
     const [comments, setComments] = useState([])
     const [formUpdateStatus, setFormUpdateStatus] = useState(false)
+    const [user, setUser] = useState()
     const [data, setData] = useState({
         comment: '',
     })
-
-    const commentTypeIcon = (type) => {
-        if (type === 'Commentaire') {
-            <FontAwesomeIcon icon={faMessage} />
-        }
-    }
 
     const handleCommentForm = () => {
         setCommentForm(!commentForm)
@@ -48,20 +37,6 @@ const IncidentView = () => {
 
     const handleUpdateForm = () => {
         setFormUpdateStatus(!formUpdateStatus)
-    }
-
-    const handleOpenIncident = async () => {
-        const status = {
-            status: 'En cours'
-        }
-        await axios.patch(`http://127.0.0.1:8000/api/incident/${id}`, status, { headers }).then((response) => {
-            console.log(response)
-            if (response.status === 200) {
-                window.location.reload();   
-            } 
-        }).catch((error) => {
-            console.log(error)
-        })
     }
 
     const handleChange = (e) => {
@@ -80,7 +55,6 @@ const IncidentView = () => {
         };
         console.log(data)
         await axios.post(`http://127.0.0.1:8000/api/incident/${id}/commentIncident`, comment, { headers }).then((response) => {
-            console.log(response)
             if (response.status === 200) {
                 window.location.reload(); 
             }
@@ -90,10 +64,11 @@ const IncidentView = () => {
     }
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchIncidentData = async () => {
             await axios.get(`http://127.0.0.1:8000/api/incident/${id}`, { headers }).then((response) => {
-                setIncident(response.data);
-                setRole(response.data.role);
+                setIncident(response.data)
+                setRole(response.data.role)
+                setUser(response.data.login)
                 if (typeof response.data === 'object') {
                     for (const key in response.data) {
                         const value = response.data.data[key]
@@ -104,31 +79,27 @@ const IncidentView = () => {
                 console.log(error)
             })
         }
-        fetchData();
-    }, [])
 
-    useEffect(() => {
-        const fetchData = async () => {
+        const fetchCommentData = async () => {
             await axios.get(`http://127.0.0.1:8000/api/incident/${id}/commentIncident`, { headers }).then((response) => {
-                setComments(response.data);
-                console.log(response.data)
+                setComments(response.data)
                 if (typeof response.data === 'object') {
                     for (const key in response.data.data) {
                         const value = response.data.data[key]
                         setComments(value)        
                     }
                 }  
-                console.log(comments);
             }).catch((error) => {
                 console.log(error)
             })
         }
-        fetchData();
-    }, [])
+        fetchIncidentData();
+        fetchCommentData()
+    }, [id])
 
     return (
         <div className='container-incident'>
-            <Sidebar userRole={role} />
+            <Sidebar userRole={role} user={user} />
             <div className="incidents-details">
                 <div className='incident-grid'>
                     <div className='title-incident'>
@@ -153,12 +124,13 @@ const IncidentView = () => {
                     </div> 
                     <div className="btn-actions">
                     <Button onClick={handleUpdateForm}>Modifier Statut</Button>
-                    {incident.status === 'Résolu' ?
-                        <div></div> : <Button onClick={handleCommentForm}>Résolu</Button> }
-                        {role === 'admin' ? <Button onClick={handleOpenIncident}>Réouvrir</Button> : <div></div>}
+                  
+                    {incident.status === 'Résolu' || incident.status === "Clôturé" ?
+                        <div></div> : <Button onClick={handleCommentForm}>Résoudre</Button> }      
                         {commentForm ? <IncidentComment role={role}/> : null }
-                        {role === 'admin' ? <Button onClick={handleCommentCloseForm}>Clôturer</Button> : <div></div>}
+                        {role === 'admin' && incident.status != "Clôturé" ? <Button onClick={handleCommentCloseForm}>Clôturer</Button> : <div></div>}
                         {commentCloseForm ? <IncidentCloseComment role={role}/> : null }
+
                     </div> 
                     <div className="comments-incident">
                         <div className="comments-view">
@@ -182,7 +154,7 @@ const IncidentView = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {comments?.map((comment) => {
+                                        {comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))?.map((comment) => {
                                             return(
                                                 <TableRow key={comment.id}>
                                                     <TableCell>

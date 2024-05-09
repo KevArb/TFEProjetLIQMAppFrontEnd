@@ -3,24 +3,31 @@ import React, {useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faXmark, faTriangleExclamation, faCircleCheck, faClockRotateLeft } from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faTriangleExclamation, faCircleCheck, faClockRotateLeft, faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import Sidebar from '../Sidebar/Sidebar'
 import './css/ListSheets.css'
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Dialog, DialogContent, Button, Select, MenuItem  } from '@mui/material'
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Dialog, DialogContent, Button, Select, MenuItem, DialogActions  } from '@mui/material'
 import {formatDateTime} from '../../utils/functions/Library'
 import { headers } from '../../utils/functions/constLibrary'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const AllMaintenanceSheetsView = () => {
 
     const navigateTo = useNavigate()
     const [role, setRole] = useState([])
     const [maintenanceSheets, setMaintenanceSheets] = useState([])
+    const [equipments, setEquipments] = useState([])
+    const [filter, setFilter] = useState(false)
     const showMaintenanceSheet = (idMaintenance) => {
         return navigateTo(`/${idMaintenance}/fm`)
     }
 
     const [data, setData] = useState({
-        status: 'Toutes'
+        status: 'Toutes',
+        equipment: 'Tous',
+        startDate: new Date(),
+        endDate: new Date()
     })
 
     const iconStatusMs = (data) => {
@@ -40,9 +47,6 @@ const AllMaintenanceSheetsView = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const dataFilter = {
-                finalStatus: data.status
-            }
             await axios.get(`http://127.0.0.1:8000/api/maintenanceSheet`, { headers }).then((response) => {
                 setMaintenanceSheets(response.data.data)
                 setRole(response.data.role)
@@ -50,8 +54,39 @@ const AllMaintenanceSheetsView = () => {
                 console.log(error)
             })
         }
+        const fecthDataEquipment = async () => {
+            await axios.get(`http://127.0.0.1:8000/api/equipment`, { headers }).then((response) => {
+                setEquipments(response.data.data)
+            }).catch((error) => {
+                console.log(error)
+            }) 
+        }
         fetchData()
+        fecthDataEquipment()
     }, [])
+
+    const filterByStatus = () => {
+        let urlAPI
+
+        if (data.status != 'Toutes' && data.equipment != 'Tous' ) {
+            urlAPI = `http://127.0.0.1:8000/api/maintenanceSheet?finalStatus=${data.status}&equipment=${data.equipment}`
+        } else if (data.equipment != 'Tous' ) {
+            urlAPI = `http://127.0.0.1:8000/api/maintenanceSheet?equipment=${data.equipment}`
+        } else if (data.status != 'Toutes') {
+            urlAPI = `http://127.0.0.1:8000/api/maintenanceSheet?finalStatus=${data.status}`
+        } else {
+            urlAPI = `http://127.0.0.1:8000/api/maintenanceSheet`
+        }
+        const fetchData = async () => {
+            await axios.get(urlAPI, { headers }).then((response) => {
+                setMaintenanceSheets(response.data.data)
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+        fetchData()
+        setFilter(!filter)
+    }
 
     const handleChangeStatusFilter = (e) => {
         const value = e.target.value
@@ -59,9 +94,15 @@ const AllMaintenanceSheetsView = () => {
             ...data,
             [e.target.name]: value
         })
-
     }
-    console.log(data)
+
+    const resetFilter = () => {
+        window.location.reload()
+    }
+
+    const activateFilter = () => {
+        setFilter(!filter)
+    }
 
     return (
         <div className='container-sheets-list'>
@@ -69,20 +110,40 @@ const AllMaintenanceSheetsView = () => {
                 <Sidebar userRole={role}/>
             </div>
             <div>
-                <Select name='status' onChange={handleChangeStatusFilter} defaultValue='Toutes'>
-                    <MenuItem value='Toutes'>Toutes</MenuItem>
-                    <MenuItem value='En cours'>En cours</MenuItem>
-                    <MenuItem value='En attente'>En attente</MenuItem>
-                    <MenuItem value='En erreur'>En erreur</MenuItem>
-                    <MenuItem value='Terminée'>Terminée</MenuItem>
-                    <MenuItem value='Discontinué'>Discontinué</MenuItem>
-                </Select>
-                <Button>Filtre</Button>
-                <Dialog open={!open}>
+                <Dialog open={filter}>
                     <DialogContent>
-                        <p>Status</p>
+                        <div className="filter-modal-form">
+                            <span>Status</span>
+                            <Select name='status' onChange={handleChangeStatusFilter} defaultValue='Toutes'>
+                                <MenuItem value='Toutes'>Toutes</MenuItem>
+                                <MenuItem value='En cours'>En cours</MenuItem>
+                                <MenuItem value='En attente'>En attente</MenuItem>
+                                <MenuItem value='En erreur'>En erreur</MenuItem>
+                                <MenuItem value='Fait'>Fait</MenuItem>
+                                <MenuItem value='Discontinué'>Discontinué</MenuItem>
+                            </Select>
+                            <span>Equipement</span>
+                            <Select name='equipment' onChange={handleChangeStatusFilter} defaultValue='Tous'>
+                                <MenuItem value='Tous'>Tous</MenuItem>
+                                {equipments?.map((equipment) => {
+                                    return ( <MenuItem key={equipment.id} value={equipment.id}>{equipment.name}</MenuItem> )
+                                })}
+                            </Select>
+                            <div>
+                                <DatePicker onChange={(date) => setData({...data, startDate: date})} selected={data.startDate}/>
+                                <DatePicker onChange={(date) => setData({...data, endDate: date})} selected={data.endDate}/>
+                            </div>
+                            <DialogActions>
+                                <Button onClick={filterByStatus}>Confirmer</Button>
+                                <Button onClick={activateFilter}>Annuler</Button>
+                            </DialogActions>       
+                        </div>
                     </DialogContent>
                 </Dialog>
+            </div>
+            <div className='filter-actions'>
+                <Button onClick={activateFilter}><FontAwesomeIcon icon={faFilter} size='2x'/></Button>
+                <Button onClick={resetFilter}><FontAwesomeIcon icon={faFilterCircleXmark} size='2x'/></Button>
             </div>
             <TableContainer className='sheets-table'>
                 <Table className='table'>
@@ -96,7 +157,7 @@ const AllMaintenanceSheetsView = () => {
                                     Status
                                 </TableCell>   
                                 <TableCell>
-                                    Date
+                                    Démarrée le
                                 </TableCell>
                                 <TableCell>
                                     Equipement
@@ -104,7 +165,7 @@ const AllMaintenanceSheetsView = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {maintenanceSheets?.map((sheet) => {
+                            {maintenanceSheets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))?.map((sheet) => {
                                 return (
                                     <TableRow onClick={() => showMaintenanceSheet(sheet.id)} key={sheet.id} className='sheet-table-row-sheet'>
                                         <TableCell>

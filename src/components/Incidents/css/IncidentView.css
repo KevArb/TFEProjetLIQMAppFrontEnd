@@ -5,7 +5,6 @@
     grid-template-columns: 200px  1fr;
     grid-template-rows: 100px 1fr;  
     justify-content: center;
-
 }
 
 .sidebar {
@@ -27,6 +26,7 @@
     gap: 30px;
     grid-template-columns: 200px 500px 500px 1fr;
     grid-template-rows: 100px 100px 1fr;
+    min-width: 500px;
 }
 
 .code-incident {
@@ -130,6 +130,20 @@
     table-layout: fixed;
     width: 100%;
     word-wrap: break-word;
+}
+
+.filter-actions {
+    padding-left: 80px;
+}
+
+.table-container {
+    grid-column: 2;
+    margin-left: 30px;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
 }
 
 

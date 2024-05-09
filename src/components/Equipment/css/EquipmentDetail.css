@@ -1,4 +1,4 @@
-.container {
+.container-detail {
     min-height: 100vh;
     width: 100%;
     display: grid;
@@ -23,8 +23,8 @@
     margin-right: 30px;
     margin-left: 60px;
     display: grid;
-    grid-template-columns: repeat(200px, 1fr);
-    /* grid-template-columns: 200px 200px 200px 200px 1fr; */
+    /* grid-template-columns: repeat(400px, 1fr); */
+    grid-template-columns: 200px 200px 200px 200px 1fr;
     grid-auto-rows: 100px 200px 200px 200px 1fr;
     min-width: 600px;
     height: 800px;    

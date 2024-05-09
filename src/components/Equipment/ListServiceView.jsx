@@ -2,19 +2,15 @@
 import React, { useEffect, useState } from 'react';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import Sidebar from '../Sidebar/Sidebar';
 import NewServiceForm from './NewServiceForm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import UpdateServiceForm from './UpdateServiceForm';
+import { headers } from '../../utils/functions/constLibrary'
 
 const ListServiceView = () => {
 
-    const token = Cookies.get('token');
-    const headers = {
-        'Authorization': 'Bearer '+ token
-    }
     const [form, setForm] = useState(false);
     const [role, setRole] = useState([]);
     const [services, setServices] = useState([]);

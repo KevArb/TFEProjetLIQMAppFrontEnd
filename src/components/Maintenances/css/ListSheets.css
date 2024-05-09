@@ -55,3 +55,16 @@ table .sheets-colomns {
 .icon-done {
     color: green;
 }
+
+.filter-modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.filter-actions {
+    grid-column: 2;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-left: 40px;
+}

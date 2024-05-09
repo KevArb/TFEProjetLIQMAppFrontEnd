@@ -1,12 +1,11 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react'
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { headers } from '../../utils/functions/constLibrary'
 
 const NewCategoryForm = () => {
 
-    const token = Cookies.get('token');
     const [open, setOpen] = useState(true);
 
     const [data, setData] = useState({
@@ -33,10 +32,7 @@ const NewCategoryForm = () => {
             name: data.name,
         };
         try {
-            await axios.post('http://127.0.0.1:8000/api/equipmentCat/newEquipmentCat', categoryData, {
-                headers: {'Authorization': 'Bearer '+ token}
-            }).then((response) => {
-                console.log(response)
+            await axios.post('http://127.0.0.1:8000/api/equipmentCat/newEquipmentCat', categoryData, { headers }).then((response) => {
                 if (response.status === 201) {
                     setData({
                         name: '',

@@ -29,6 +29,7 @@ const Sidebar = ( props ) => {
 
     const logOut = async () => {
         Cookies.remove('token')
+        localStorage.removeItem('token');
         return navigateTo('/login')
     }
 
