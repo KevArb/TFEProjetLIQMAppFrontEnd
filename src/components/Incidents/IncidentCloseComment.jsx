@@ -23,7 +23,8 @@ const IncidentCloseComment = () => {
 
     const resolveIncident = async () => {
         const status = {
-            status: 'Résolu'
+            status: 'Clôturé',
+            isClosed: true,
         }
         await axios.patch(`http://127.0.0.1:8000/api/incident/${id}`, status, { headers }).then((response) => {
             console.log(response)
@@ -37,7 +38,6 @@ const IncidentCloseComment = () => {
     }
 
     const closeModalForm = () => {
-        // setOpen(!open)
         window.location.reload()
     }
 
@@ -57,7 +57,7 @@ const IncidentCloseComment = () => {
         e.preventDefault();
         const comment = {
             comment: data.comment,
-            status: 'Clôture',
+            status: 'Clôturé',
         };
         await axios.post(`http://127.0.0.1:8000/api/incident/${id}/commentIncident`, comment, { headers }).then((response) => {
             if (response.status === 200) {

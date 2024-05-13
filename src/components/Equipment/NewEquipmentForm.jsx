@@ -169,9 +169,6 @@ const NewEquipmentForm = () => {
     return (
         <div className='container-new-equipment'>
             <Sidebar userRole={role}/>
-            <div className='title'>
-                <h1>Ajouter un équipement</h1>
-            </div>
             <div className="form-equipment">
                 <form onSubmit={handleSubmit} className="form" encType="multipart/form-data">
                     <div>
@@ -207,6 +204,7 @@ const NewEquipmentForm = () => {
                                             })}
                                     </Select>
                                 </FormControl>
+                                <Button onClick={addSupplierForm} startIcon={<FontAwesomeIcon icon={faCirclePlus} size='2x'/>}>Fournisseur</Button>
                             </div>    
                         </div>
                         <div>
@@ -222,6 +220,7 @@ const NewEquipmentForm = () => {
                                             })}
                                         </Select>
                                     </FormControl>
+                                    <Button onClick={addServiceForm} startIcon={<FontAwesomeIcon icon={faCirclePlus} size='2x'/>}>Service</Button>
                                 </div>
                             </div>
                         </div>
@@ -239,6 +238,7 @@ const NewEquipmentForm = () => {
                                                 })}
                                             </Select>
                                     </FormControl>
+                                    <Button onClick={addCatForm} startIcon={<FontAwesomeIcon icon={faCirclePlus} size='2x'/>}>Catégorie</Button>
                                 </div>
                             </div>
                         </div>
@@ -247,16 +247,17 @@ const NewEquipmentForm = () => {
                         {errMsgCat ? <span className='err-msg'>{errMsgCat}</span> : null}
 
                     </div>
-                    <div className='select'>
+                    {/* <div className='select'>
                         <Button onClick={addServiceForm} startIcon={<FontAwesomeIcon icon={faCirclePlus} size='2x'/>}>Service</Button>
                         <Button onClick={addSupplierForm} startIcon={<FontAwesomeIcon icon={faCirclePlus} size='2x'/>}>Fournisseur</Button>
                         <Button onClick={addCatForm} startIcon={<FontAwesomeIcon icon={faCirclePlus} size='2x'/>}>Catégorie</Button>
+                    </div> */}
+                    <div className="action">
+                        <Button onClick={handleSubmit} size="large">Confirmer</Button>
                     </div>
                 </form>
             </div>
-            <div className="action">
-                    <Button onClick={handleSubmit} size="large">Confirmer</Button>
-            </div>
+
             <div className='modal' >
                 <div className='overlay'>
                     { addServcie ? 

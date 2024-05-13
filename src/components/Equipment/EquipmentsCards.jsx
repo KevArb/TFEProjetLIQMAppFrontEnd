@@ -215,8 +215,8 @@ const EquipmentsList = () => {
                         <TextField id='search-field' type="text" placeholder='Rechercher un équipement...' onChange={handleSearch} />
                         { role === 'admin' || role === 'manager' ? 
                             <div>
-                                <label>Afficher archives</label>
-                                <FormControlLabel control={ <Checkbox onClick={showIsNotUsed} name='isUsed' checked={isNotUsed}/> } />
+                                {/* <label>Afficher archives</label> */}
+                                {/* <FormControlLabel control={ <Checkbox onClick={showIsNotUsed} name='isUsed' checked={isNotUsed}/> } /> */}
                             </div> : null}
                     </div>
                     <div>

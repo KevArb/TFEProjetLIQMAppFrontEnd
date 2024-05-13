@@ -91,7 +91,7 @@ const ModalFormChangeStatusIncident = ( idIncident ) => {
                     </FormControl>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Close</Button>
+                    <Button onClick={handleClose}>Annuler</Button>
                 </DialogActions>
             </Dialog>
         </div>

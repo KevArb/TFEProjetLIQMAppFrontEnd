@@ -2,20 +2,23 @@
     min-height: 100vh;
     width: 100%;
     min-width: 200vh;
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    grid-template-rows: 100px 350px 200px 200px 100px 1fr;  
+    display:inline-flexbox;
+    flex-direction: row;
+    /* grid-template-columns: 300px 1fr;
+    grid-template-rows: 100px 350px 200px 200px 100px 1fr;   */
     
 }
 
 .sidebar {
-    grid-column: 1;
-    grid-row: 1 / 6;
+    /* grid-column: 1;
+    grid-row: 1 / 6; */
 }
 
 .form-equipment {
-    grid-column: 2;
-    grid-row: 2;
+    margin-left: 200px;
+    margin-top: 30px;
+    /* grid-column: 2;
+    grid-row: 2; */
 }
 
 .title {
@@ -26,15 +29,17 @@
 
 .form {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
+    flex-direction: column;
+        justify-content: center;
+    align-items: center;
     gap: 50px;
 }
 
 .select {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
+    align-items: center;
 }
 
 .action {
@@ -54,7 +59,7 @@
 .supplier-form {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content:center;
     margin-top: 15px;
 }
 
@@ -65,14 +70,14 @@ select{
 .service-form {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content:center;
     margin-top: 15px;
 }
 
 .category-form{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;  
+    justify-content:center;
     margin-top: 15px;   
 }
 

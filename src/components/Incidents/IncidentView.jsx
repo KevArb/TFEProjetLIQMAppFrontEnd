@@ -23,6 +23,7 @@ const IncidentView = () => {
     const [comments, setComments] = useState([])
     const [formUpdateStatus, setFormUpdateStatus] = useState(false)
     const [user, setUser] = useState()
+    const [errComment, setErrComment] = useState()
     const [data, setData] = useState({
         comment: '',
     })
@@ -49,18 +50,21 @@ const IncidentView = () => {
     };
 
     const postComment = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
         const comment = {
             comment: data.comment,
-        };
-        console.log(data)
-        await axios.post(`http://127.0.0.1:8000/api/incident/${id}/commentIncident`, comment, { headers }).then((response) => {
-            if (response.status === 200) {
-                window.location.reload(); 
-            }
-        }).catch((error) => {
-            console.log(error)
-        })
+        }
+        if (comment.comment === null || comment.comment === '') { 
+            setErrComment('Veuillez renseigner un commentaire') 
+        } else {
+            await axios.post(`http://127.0.0.1:8000/api/incident/${id}/commentIncident`, comment, { headers }).then((response) => {
+                if (response.status === 200) {
+                    window.location.reload()
+                }
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
     }
 
     useEffect(() => {
@@ -118,15 +122,15 @@ const IncidentView = () => {
                         <div className="form-view">
                             <form>
                                 <TextField id='comment-field' type="text" name='comment' value={data.comment} placeholder='Commentaire' onChange={handleChange} multiline rows={6}/>
+                                {errComment ? <span className='err-msg'>{errComment}</span> : null}
                                 <Button onClick={postComment}>Commenter</Button>
                             </form>                            
                         </div>
                     </div> 
                     <div className="btn-actions">
                     <Button onClick={handleUpdateForm}>Modifier Statut</Button>
-                  
                     {incident.status === 'Résolu' || incident.status === "Clôturé" ?
-                        <div></div> : <Button onClick={handleCommentForm}>Résoudre</Button> }      
+                        <div></div> : null }      
                         {commentForm ? <IncidentComment role={role}/> : null }
                         {role === 'admin' && incident.status != "Clôturé" ? <Button onClick={handleCommentCloseForm}>Clôturer</Button> : <div></div>}
                         {commentCloseForm ? <IncidentCloseComment role={role}/> : null }
