@@ -20,7 +20,6 @@ const NewEquipmentForm = () => {
     const [addServcie, setAddService] = useState(false)
     const [addSupplier, setAddSupplier] = useState(false)
     const [addCat, setAddCat] = useState(false)
-    const [role, setRole] = useState([])
     const token = Cookies.get('token')
     const [errMsgName, setErrMsgName] = useState('')
     const [errMsgCode, setErrMsgCode] = useState('')
@@ -111,7 +110,6 @@ const NewEquipmentForm = () => {
                 await axios.get('http://127.0.0.1:8000/api/supplier', {
                     headers: {'Authorization': 'Bearer '+ token}
                 }).then((response) => {
-                    setRole(response.data.role)
                     if (typeof response.data === 'object') {
                         for (const key in response.data) {
                             const value = response.data[key]
@@ -168,7 +166,9 @@ const NewEquipmentForm = () => {
 
     return (
         <div className='container-new-equipment'>
-            <Sidebar userRole={role}/>
+            <div>
+                <Sidebar />
+            </div>
             <div className="form-equipment">
                 <form onSubmit={handleSubmit} className="form" encType="multipart/form-data">
                     <div>

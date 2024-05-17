@@ -34,7 +34,7 @@ const LoginView = () => {
             await axios.post('http://127.0.0.1:8000/api/user/login', userData).then((response) => {
                 if (response.status === 200) {
                     login(response.data.token);
-                    getUserData(response.data.data.user.login, response.data.data.user.role)
+                    getUserData(response.data.data.user.role, response.data.data.user.login)
                     return navigateTo('/equipments')
                 } else {
                     alert(response.data.error);

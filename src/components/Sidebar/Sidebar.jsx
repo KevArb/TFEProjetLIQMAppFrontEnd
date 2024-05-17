@@ -16,7 +16,7 @@ const Sidebar = () => {
     const userLogin = Cookies.get('userLogin')
     const navigateTo = useNavigate()
     const equipmentView = async () => {
-        return navigateTo('/')
+        return navigateTo('/equipments')
     }
 
     const incidentsListView = () => {

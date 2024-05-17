@@ -1,0 +1,23 @@
+.container-list-user {
+    display: flex;
+    flex-direction: column;
+}
+
+.list-user {
+    margin-left: 250px;
+}
+
+.add-user-btn {
+    cursor: pointer;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-left: 15px;
+}
+
+.add-user-btn:hover {
+    transform: scale(1.2);
+}
+
+.err-msg {
+    color: red;
+}

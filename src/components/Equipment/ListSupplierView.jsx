@@ -12,7 +12,6 @@ import { headers } from '../../utils/functions/constLibrary'
 const ListSupplierView = () => {
 
     const [form, setForm] = useState(false);
-    const [role, setRole] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
     const [idSupplier, setIdSuppleir] = useState('');
     const [newServiceForm, setNewServiceForm] = useState(false);
@@ -36,7 +35,6 @@ const ListSupplierView = () => {
             const fecthData = async () => {
                 await axios.get(`http://127.0.0.1:8000/api/supplier/`, { headers }).then((response) => {
                     setSuppliers(response.data.data);
-                    setRole(response.data.role);
                 }).catch((error) => {
                     console.log(error);
                 })
@@ -47,7 +45,7 @@ const ListSupplierView = () => {
 
     return (
         <div className='container-incidents-list'>
-            <Sidebar userRole={role}/>
+            <Sidebar />
             <TableContainer className='incidents-table-container'>
                     <FormGroup >
                         <div className='filter-check'>

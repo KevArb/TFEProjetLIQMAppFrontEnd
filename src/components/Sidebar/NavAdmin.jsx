@@ -24,13 +24,17 @@ const NavAdmin = () => {
         return navigateTo('/listSuppliers')
     };
 
-    const newCategory =  () => {
-        return navigateTo('/newCategory')
-    };
+    // const newCategory =  () => {
+    //     return navigateTo('/newCategory')
+    // };
     
     const listMaintenance =  () => {
         return navigateTo('/listMaintenances')
     };
+
+    const listUser = () => {
+        return navigateTo('/listUser')
+    }
     
     return (
         <div>
@@ -55,7 +59,7 @@ const NavAdmin = () => {
                     <FontAwesomeIcon icon={faList} size='2x'/>
                     <p>Liste des fournisseurs</p>
                 </div>
-                <div onClick={newCategory} className="bottom-item recent-entry">
+                <div onClick={listUser} className="bottom-item recent-entry">
                     <FontAwesomeIcon icon={faUserPlus} size='2x'/>
                     <p>Gestion Utilisateurs</p>
                 </div>

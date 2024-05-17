@@ -12,7 +12,6 @@ const UpdateEquipmentForm = () => {
     const token = Cookies.get('token');
     const {id} = useParams();
     const [equipment, setEquipment] = useState([])
-    const [role, setRole] = useState([]);
     const navigateTo = useNavigate();
     const [errMsg, setErrMsg] = useState([])
 
@@ -64,8 +63,7 @@ const UpdateEquipmentForm = () => {
             await axios.get(`http://127.0.0.1:8000/api/equipment/${id}`, {
                 headers: {'Authorization': 'Bearer '+ token}
             }).then((response) => {
-                setEquipment(response.data);
-                setRole(response.data.role)
+                setEquipment(response.data)
                 if (typeof response.data === 'object') {
                     for (const key in response.data) {
                         const value = response.data.data[key]
@@ -82,7 +80,7 @@ const UpdateEquipmentForm = () => {
     return (
         <div>
             <div className="container-update">
-                <Sidebar userRole={role}/>
+                <Sidebar />
                 <div className="form-update">
                     <form action="">
                         <input type="text" value={data.name || equipment.name || ''} placeholder={equipment.name || ''} name='name' onChange={handleChange}/>

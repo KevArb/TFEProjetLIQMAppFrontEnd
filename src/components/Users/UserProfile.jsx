@@ -5,18 +5,49 @@ import Sidebar from '../Sidebar/Sidebar'
 import ChangeUserPwd from './ChangeUserPwd'
 import './css/UserProfile.css'
 import { Button, Avatar } from '@mui/material'
-// import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { headers } from '../../utils/functions/constLibrary'
+import Cookies from 'js-cookie'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 
 const UserProfile = () => {
 
+    const token = Cookies.get('token')
+    const headers = {
+        'Authorization': 'Bearer '+ token
+    }
     const [user, setUser] = useState([])
     const [changePwdForm, setChangePwdForm] = useState(false)
     const [avatarForm, setAvatarForm] = useState(false)
     const [image, setImage] = useState()
     const [avatar, setAvatar] = useState()
+
+    const pwdForm = () => (
+        setChangePwdForm(!changePwdForm)
+    )
+
+    const newAvatarUpload = () => {
+        setAvatarForm(!avatarForm)
+    }
+
+    const uploadImg = (e) => {
+        setImage(e.target.files[0])
+    }
+
+    const fetchData = async () => {
+        await axios.get(`http://127.0.0.1:8000/api/user/profile`, { headers }).then((response) => {
+            setUser(response.data.data.user)
+            console.log(response.data.data.user)
+        }).catch((error) => (
+            console.log(error)
+        ))
+    }
+    const getImg = async () => {
+        await axios.get(`http://127.0.0.1:8000/api/user/get-img-profil`, { headers }).then((response) => {
+            setAvatar(response.data.data)
+        }).catch((error) => (
+            console.log(error)
+        )) 
+    }
 
     const submitImg = (id) => {
         // e.preventDefault()
@@ -32,42 +63,16 @@ const UserProfile = () => {
         }
         fetchData()
     }
-
-    const pwdForm = () => (
-        setChangePwdForm(!changePwdForm)
-    )
-
-    const newAvatarUpload = () => {
-        setAvatarForm(!avatarForm)
-    }
-
-    const uploadImg = (e) => {
-        setImage(e.target.files[0])
-    }
-
+    
     useEffect(() => {
-        const fetchData = async () => {
-            await axios.get(`http://127.0.0.1:8000/api/user/profile`, { headers }).then((response) => {
-                setUser(response.data.data.user)
-                console.log(response.data.data.user)
-            }).catch((error) => (
-                console.log(error)
-            ))
-        }
-        const getImg = async () => {
-            await axios.get(`http://127.0.0.1:8000/api/user/get-img-profil`, { headers }).then((response) => {
-                setAvatar(response.data.data)
-            }).catch((error) => (
-                console.log(error)
-            ))
-        }
-        fetchData()
+        fetchData() 
         getImg()
     }, [])
 
+  
     return (
         <div className='container-user-view'>
-            <Sidebar userRole={user.role}/>
+            <Sidebar />
             <div className='container-user'>
                 <div>
                     <h1>Bonjour {user.firstName} {user.lastName}</h1>

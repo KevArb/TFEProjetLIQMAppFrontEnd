@@ -12,7 +12,6 @@ import { headers } from '../../utils/functions/constLibrary'
 const ListServiceView = () => {
 
     const [form, setForm] = useState(false);
-    const [role, setRole] = useState([]);
     const [services, setServices] = useState([]);
     const [idService, setIdService] = useState('');
     const [newServiceForm, setNewServiceForm] = useState(false);
@@ -36,7 +35,6 @@ const ListServiceView = () => {
             const fecthData = async () => {
                 await axios.get(`http://127.0.0.1:8000/api/service/`, { headers }).then((response) => {
                     setServices(response.data.data);
-                    setRole(response.data.role);
                 }).catch((error) => {
                     console.log(error);
                 })
@@ -46,7 +44,6 @@ const ListServiceView = () => {
             const fecthData = async () => {
                 await axios.get(`http://127.0.0.1:8000/api/service/`, { isUsed : true}, { headers }).then((response) => {
                     setServices(response.data.data);
-                    setRole(response.data.role);
                 }).catch((error) => {
                     console.log(error);
                 })
@@ -57,7 +54,7 @@ const ListServiceView = () => {
 
     return (
         <div className='container-incidents-list'>
-            <Sidebar userRole={role}/>
+            <Sidebar />
             <TableContainer className='incidents-table-container'>
                     <FormGroup >
                         <div className='filter-check'>

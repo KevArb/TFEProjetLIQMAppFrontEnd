@@ -18,6 +18,7 @@ import ListServiceView from '../../components/Equipment/ListServiceView.jsx'
 import ListSupplierView from '../../components/Equipment/ListSupplierView.jsx'
 import AllMaintenances from '../../components/Maintenances/AllMaintenances.jsx'
 import EquipmentCards from '../../components/Equipment/EquipmentsCards.jsx'
+import UserList from '../../components/Users/UserList.jsx'
 
 const router = createBrowserRouter([
     {
@@ -95,6 +96,10 @@ const router = createBrowserRouter([
     {
       path: '/listMaintenances',
       element: <AllMaintenances />
+    },
+    {
+      path: '/listUser',
+      element: <UserList />
     }
   ])
 

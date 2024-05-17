@@ -18,9 +18,8 @@ const EquipmentsList = () => {
     const headers = {
         'Authorization': 'Bearer '+ token
     }
+    const role = Cookies.get('userRole')
     const [items, setItems] = useState([])
-    const [role, setRole] = useState(undefined)
-    const [user, setUser] = useState([])
     const navigateTo = useNavigate()
     const [services, setServices] = useState([])
     const [suppliers, setSuppliers,] = useState([])
@@ -81,7 +80,6 @@ const EquipmentsList = () => {
                 urlAPI = `http://127.0.0.1:8000/api/equipment?search=${searchQuery}`
             } 
             await axios.get(urlAPI, { headers }).then((response) => {
-                setRole(response.data.role)
                 setItems(response.data)
                 if (typeof response.data === 'object') {
                     for (const key in response.data) {
@@ -92,14 +90,12 @@ const EquipmentsList = () => {
             })
         } else {
             if (searchQuery === '') {
-                console.log('champ vide mais a été modfiié')
                 let urlAPI = `http://127.0.0.1:8000/api/equipment?isUsed=true`
                 if (!isNotUsed) {
                     urlAPI = `http://127.0.0.1:8000/api/equipment`
                 } 
                 url = url.replace('?', '')
                 await axios.get(urlAPI + url, { headers }).then((response) => {
-                    setRole(response.data.role)
                     setItems(response.data)
                     if (typeof response.data === 'object') {
                         for (const key in response.data) {
@@ -115,7 +111,6 @@ const EquipmentsList = () => {
                     urlAPI = `http://127.0.0.1:8000/api/equipment?search=${searchQuery}`
                 } 
                 await axios.get(urlAPI + `&` + url, { headers }).then((response) => {
-                    setRole(response.data.role)
                     setItems(response.data)
                     if (typeof response.data === 'object') {
                         for (const key in response.data) {
@@ -182,8 +177,6 @@ const EquipmentsList = () => {
                 urlAPI = `http://127.0.0.1:8000/api/equipment?isUsed=true`
             } 
             await axios.get(urlAPI, { headers }).then((response) => {
-                setRole(response.data.role)
-                setUser(response.data.login)
                 setItems(response.data)
                 setIsNotUsed(isNotUsed)
                 if (typeof response.data === 'object') {
@@ -191,8 +184,7 @@ const EquipmentsList = () => {
                         const value = response.data[key]
                         setItems(value)   
                     }
-                }
-                             
+                }                             
             }).catch((error) => {
                 console.log(error)
             })
