@@ -7,15 +7,19 @@ import Sidebar from '../Sidebar/Sidebar'
 import {    Avatar, Card, CardHeader, TextField, CardContent, CardActions, Typography, 
             Table, Chip, TableHead, Select, MenuItem, FormControl, 
             InputLabel, Button, TableContainer, TableRow, TableCell, TableBody, 
-            Checkbox, FormControlLabel} from '@mui/material'
-import { headers } from '../../utils/functions/constLibrary'
+            Checkbox } from '@mui/material'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faList, faTableCellsLarge, faBoxArchive } from '@fortawesome/free-solid-svg-icons';
+import Cookies from 'js-cookie'
 
 const EquipmentsList = () => { 
-
+    
+    const token = Cookies.get('token')
+    const headers = {
+        'Authorization': 'Bearer '+ token
+    }
     const [items, setItems] = useState([])
-    const [role, setRole] = useState('')
+    const [role, setRole] = useState(undefined)
     const [user, setUser] = useState([])
     const navigateTo = useNavigate()
     const [services, setServices] = useState([])
@@ -23,6 +27,7 @@ const EquipmentsList = () => {
     const [categories, setCategories] = useState([])
     const [listView, setListView] = useState(false)
     const [isNotUsed, setIsNotUsed] = useState(false)
+    // eslint-disable-next-line no-unused-vars
     const [search, setSearch] = useState('')
     const [filterFields, setFilterFields] = useState({
         supplier: '',
@@ -56,11 +61,11 @@ const EquipmentsList = () => {
         window.location.reload()
     }
 
-    const showIsNotUsed = () => {
-        setIsNotUsed(!isNotUsed)
-        console.log(search)
-        itemData(search)
-    }
+    // const showIsNotUsed = () => {
+    //     setIsNotUsed(!isNotUsed)
+    //     console.log(search)
+    //     itemData(search)
+    // }
 
     const itemData = async (searchQuery) => {
         let url = '?'
@@ -72,7 +77,6 @@ const EquipmentsList = () => {
         if (url === '?' && !searchQuery) {
             console.log('quand init champ vide')
             let urlAPI = `http://127.0.0.1:8000/api/equipment?isUsed=true&search=${searchQuery}`
-            console.log(isNotUsed)
             if (isNotUsed) {
                 urlAPI = `http://127.0.0.1:8000/api/equipment?search=${searchQuery}`
             } 
@@ -90,7 +94,6 @@ const EquipmentsList = () => {
             if (searchQuery === '') {
                 console.log('champ vide mais a été modfiié')
                 let urlAPI = `http://127.0.0.1:8000/api/equipment?isUsed=true`
-                console.log(isNotUsed)
                 if (!isNotUsed) {
                     urlAPI = `http://127.0.0.1:8000/api/equipment`
                 } 
@@ -106,14 +109,11 @@ const EquipmentsList = () => {
                     }               
                 })
             } else {
-                console.log('champ pas vide')
                 url = url.replace('?', '')
                 let urlAPI = `http://127.0.0.1:8000/api/equipment?isUsed=true&search=${searchQuery}`
-                console.log(isNotUsed)
                 if (isNotUsed) {
                     urlAPI = `http://127.0.0.1:8000/api/equipment?search=${searchQuery}`
                 } 
-                console.log(urlAPI)
                 await axios.get(urlAPI + `&` + url, { headers }).then((response) => {
                     setRole(response.data.role)
                     setItems(response.data)
@@ -130,7 +130,6 @@ const EquipmentsList = () => {
     
     const fieldsSearch = async () => {
         let url = '?'
-        console.log('uniquement via menu déroulant')
         if (filterFields.supplier != '' && filterFields.supplier != 'default') url = url + 'supplier=' + filterFields.supplier + "&"
         if (filterFields.category != '' && filterFields.category != 'default') url = url + 'category=' + filterFields.category + "&"
         if (filterFields.service != '' && filterFields.service != 'default') url = url + 'service=' + filterFields.service + "&"        
@@ -198,10 +197,12 @@ const EquipmentsList = () => {
                 console.log(error)
             })
         }
+
         fetchSupplier()
         fetchCat()
         fetchServices()
         fetchData()
+
     }, [role, isNotUsed])
     
     return (

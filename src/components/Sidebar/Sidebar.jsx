@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from 'react'
 import './Sidebar.css'
 import { useNavigate } from 'react-router-dom'
-import Cookies from 'js-cookie'
 import NavAdmin from './NavAdmin'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faScrewdriverWrench, faToolbox, faSheetPlastic, faUser, faRightFromBracket} from '@fortawesome/free-solid-svg-icons'
+import { faScrewdriverWrench, faToolbox, faSheetPlastic, faUser } from '@fortawesome/free-solid-svg-icons'
 import { Avatar } from '@mui/material'
+import { AuthProvider } from '../LoginView/AuthProvider'
+import LogOutAction from '../LoginView/LogOutAction'
 
 const Sidebar = ( props ) => {
     
@@ -25,12 +26,6 @@ const Sidebar = ( props ) => {
 
     const getProfileData = () => {
         return navigateTo('/profile')
-    }
-
-    const logOut = async () => {
-        Cookies.remove('token')
-        localStorage.removeItem('token');
-        return navigateTo('/login')
     }
 
     return (
@@ -59,10 +54,9 @@ const Sidebar = ( props ) => {
                     <FontAwesomeIcon icon={faUser} size='2x'/>
                     <p>Profile</p>
                 </div>
-                <div onClick={logOut} className="bottom-item recent-entry">
-                    <FontAwesomeIcon icon={faRightFromBracket} size='2x'/>
-                    <p>Log Out</p>    
-                </div>
+                <AuthProvider>
+                    <LogOutAction />
+                </AuthProvider>
             </div>
         </div>
     )

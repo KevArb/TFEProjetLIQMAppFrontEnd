@@ -17,11 +17,16 @@ import NewMaintenanceForm from '../../components/Maintenances/NewMaintenanceForm
 import ListServiceView from '../../components/Equipment/ListServiceView.jsx'
 import ListSupplierView from '../../components/Equipment/ListSupplierView.jsx'
 import AllMaintenances from '../../components/Maintenances/AllMaintenances.jsx'
+import EquipmentCards from '../../components/Equipment/EquipmentsCards.jsx'
 
 const router = createBrowserRouter([
     {
       path: '/',
       element: <App />
+    },
+    {
+      path: '/equipments',
+      element: <EquipmentCards />
     },
     {
       path: '/equipment-details/:id',

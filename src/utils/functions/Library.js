@@ -1,6 +1,15 @@
+
+export const isLoggedIn = (token) => {
+    if (token === undefined) {
+        return false
+    } else {
+        return true
+    }
+}
+
+
 export const convertTypeData = (data) => {
     if (typeof data === 'object') {
-        console.log(data)
         for (const key in data.data) {           
             const value = data[key]
             console.log(value)
@@ -52,3 +61,4 @@ export function computeFinalStatus( array ) {
     }
     return finalStatus;
 }
+

@@ -146,4 +146,8 @@
     flex-direction: column;
 }
 
+.err-msg {
+    color: red;
+}
+
 

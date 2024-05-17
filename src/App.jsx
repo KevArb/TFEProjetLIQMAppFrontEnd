@@ -1,12 +1,15 @@
 import './App.css'
-import EquipmentsCards from './components/Equipment/EquipmentsCards'
-// import Sidebar from './components/Sidebar/Sidebar'
-// import EquipmentDetails from './components/Equipment/EquipmentDetails'
+import { AuthProvider } from './components/LoginView/AuthProvider'
+import LoginView from './components/LoginView/LoginView'
 
 function App() {
   return (
     <>
-      <EquipmentsCards />
+      <AuthProvider>
+        <div>
+            <LoginView />
+        </div>
+      </AuthProvider>
     </>
   )
 }

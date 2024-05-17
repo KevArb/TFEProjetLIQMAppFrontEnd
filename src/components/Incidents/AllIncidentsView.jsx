@@ -41,25 +41,29 @@ const AllIncidentsView = () => {
     }
 
     const handleFilter = () => {
-        // const dataFilter = {
-        //     status: data.status,
-        //     equipment: data.equipment
-        // }
-        if (data.status != 'Tous' && data.equipment != 'Tous') {
-            const getDataFormFilter = async () => {
-                await axios.get(`http://127.0.0.1:8000/api/incident?equipment=${data.equipment}&status=${data.status}`, { headers }).then((response) => {
-                    setEquipments(response.data.data)
-                    setFilter(!filter)
-                }).catch((error) => {
-                    console.log(error)
-                })
-            }
-            getDataFormFilter()
+        let urlAPI = ''
+        const dataFilter = {
+            status: data.status,
+            equipment: data.equipment
         }
+
+        if (dataFilter.status != 'Tous' && dataFilter.equipment != 'Tous') urlAPI = `http://127.0.0.1:8000/api/incident?equipment=${data.equipment}&status=${data.status}`
+        if (dataFilter.status != 'Tous' && dataFilter.equipment === 'Tous') urlAPI = `http://127.0.0.1:8000/api/incident?&status=${data.status}`
+        if (dataFilter.status === 'Tous' && dataFilter.equipment != 'Tous') urlAPI = `http://127.0.0.1:8000/api/incident?&equipment=${data.equipment}`
+        if (dataFilter.status === 'Tous' && dataFilter.equipment === 'Tous') urlAPI = `http://127.0.0.1:8000/api/incident`
+
+        const getDataFormFilter = async () => {
+            await axios.get(urlAPI, dataFilter, { headers }).then((response) => {
+                setEquipments(response.data.data)
+                setFilter(!filter)
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+        getDataFormFilter()
 
     }
 
-    console.log(data)
     const iconStatusMs = (data) => {
         if (data === 'En cours') {
             return (<div><FontAwesomeIcon icon={faSpinner} spin/></div>)
