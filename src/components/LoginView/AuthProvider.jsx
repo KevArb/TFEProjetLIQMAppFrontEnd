@@ -6,6 +6,10 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState({ token: null, isAuthenticated: false });
+    // const [userData, setUserData] = useState({
+    //     userRole: '',
+    //     userLogin:''
+    // })
 
     const login = (token) => {
         setAuth({ token, isAuthenticated: true });
@@ -15,7 +19,14 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setAuth({ token: null, isAuthenticated: false });
         Cookies.remove('token')
+        Cookies.remove('userRole')
+        Cookies.remove('userLogin')
     };
+
+    const getUserData = (role, login) => {
+        Cookies.set('userRole', role)
+        Cookies.set('userLogin', login)
+    }
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -25,7 +36,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ auth, login, logout }}>
+        <AuthContext.Provider value={{ auth, login, logout, getUserData }}>
             {children}
         </AuthContext.Provider>
     );

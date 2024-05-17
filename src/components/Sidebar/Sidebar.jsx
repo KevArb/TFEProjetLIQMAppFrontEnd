@@ -8,9 +8,12 @@ import { faScrewdriverWrench, faToolbox, faSheetPlastic, faUser } from '@fortawe
 import { Avatar } from '@mui/material'
 import { AuthProvider } from '../LoginView/AuthProvider'
 import LogOutAction from '../LoginView/LogOutAction'
+import Cookies from 'js-cookie'
 
-const Sidebar = ( props ) => {
+const Sidebar = () => {
     
+    const userRole = Cookies.get('userRole')
+    const userLogin = Cookies.get('userLogin')
     const navigateTo = useNavigate()
     const equipmentView = async () => {
         return navigateTo('/')
@@ -33,7 +36,7 @@ const Sidebar = ( props ) => {
             <div className="top">
                 <div className='user-section'>
                     <Avatar alt="Remy Sharp" src="" />
-                    <h2>{props.user} </h2>  
+                    <h2>{userLogin}</h2>  
                 </div>
                 <div onClick={equipmentView} className="bottom-item recent-entry">
                     <FontAwesomeIcon icon={faScrewdriverWrench} size='2x'/>
@@ -48,7 +51,7 @@ const Sidebar = ( props ) => {
                     <p className='txt'>Incidents</p>
                 </div> 
             </div>  
-            {props.userRole === 'admin' || props.userRole === 'manager' ? <div><NavAdmin/></div> : <div></div>} 
+            {userRole === 'admin' || userRole === 'manager' ? <div><NavAdmin/></div> : <div></div>} 
             <div className="bottom">
                 <div onClick={getProfileData} className="bottom-item recent-entry">
                     <FontAwesomeIcon icon={faUser} size='2x'/>

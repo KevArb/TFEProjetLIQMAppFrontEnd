@@ -10,11 +10,15 @@ import { formatDateTime } from '../../utils/functions/Library'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 import ModalFormNewIncident from '../Incidents/ModalFormNewIncident'
-import { headers } from '../../utils/functions/constLibrary'
+import Cookies from 'js-cookie'
 
 const EquipmentDetails = () => {
 
     const {id} = useParams()
+    const token = Cookies.get('token')
+    const headers = {
+        'Authorization': 'Bearer '+ token
+    }
     const [equipment, setEquipment] = useState([])
     const [maintenanceSheets, setMaintenanceSheets] = useState([])
     const [incidents, setIncidents] = useState([])
@@ -132,7 +136,7 @@ const EquipmentDetails = () => {
     
     return (
         <div className='container-detail'>
-            <Sidebar userRole={role}/>
+            <Sidebar />
             <div className="container-equipment">
                 <div className="equipment-card">
                     <div className="equipment-title">

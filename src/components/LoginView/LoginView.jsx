@@ -7,7 +7,8 @@ import { AuthContext } from './AuthProvider';
 
 const LoginView = () => {
 
-    const { login } = useContext(AuthContext);
+    const { login, getUserData } = useContext(AuthContext);
+    
     const navigateTo = useNavigate()
     const [errMsg, setErrMsg] = useState([])
     const [data, setData] = useState({
@@ -31,12 +32,12 @@ const LoginView = () => {
         }
         try {
             await axios.post('http://127.0.0.1:8000/api/user/login', userData).then((response) => {
-                console.log(response.data.token)
                 if (response.status === 200) {
                     login(response.data.token);
+                    getUserData(response.data.data.user.login, response.data.data.user.role)
                     return navigateTo('/equipments')
                 } else {
-                    alert(data.error);
+                    alert(response.data.error);
                 }
             })
         } catch (error) {
@@ -44,52 +45,6 @@ const LoginView = () => {
         }
     };
      
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault()
-    //     const userData = {
-    //       login: data.login,
-    //       password: data.password
-    //     }
-    //     try {
-    //         await axios.post('http://127.0.0.1:8000/api/user/login', userData).then((response) => {
-    //             try {
-    //                 const token = response.data.token
-    //                 Cookies.set('token', token, { expires: 1, secure: true })
-    //                 } catch (error) {
-    //                     console.error(error.message)
-    //                 }
-    //                 if (response.status === 200) { 
-    //                     return navigateTo('/')
-    //                 }      
-    //           })            
-    //     } catch (error) {
-    //         setErrMsg(error.response.data.message)
-    //         console.log(errMsg)
-    //         return navigateTo('/login', { errMsg })
-    //     }
-
-    // }
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault()
-    //     const userData = {
-    //       login: data.login,
-    //       password: data.password
-    //     }
-    //     await axios.post('http://127.0.0.1:8000/api/user/login', userData).then((response) => {
-    //             const token = response.data.token
-    //             Cookies.set('token', token, { expires: 1, secure: true })
-    //             // setAuth({ token, isAuthenticated: true })
-    //             if (response.status === 200) { 
-    //                 return navigateTo('/')
-    //             }      
-    //         }).catch((error) => {
-    //             setErrMsg(error.response.data.message)
-    //             console.log(errMsg)
-    //             return navigateTo('/login', { errMsg })
-    //         })
-    // }
-
     return (
         <div className='container-login'>
             <div className="login-card">

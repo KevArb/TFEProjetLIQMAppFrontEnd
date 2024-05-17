@@ -208,7 +208,7 @@ const EquipmentsList = () => {
     return (
         <div className='container'> 
             <div>
-                <Sidebar userRole={role} user={user}/>   
+                <Sidebar/>   
             </div>
             <div className='main-container'> 
                 <div className='search-bar-container'>
