@@ -7,10 +7,15 @@ import NewServiceForm from './NewServiceForm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import UpdateServiceForm from './UpdateServiceForm';
-import { headers } from '../../utils/functions/constLibrary'
+import Cookies from 'js-cookie';
 
 const ListServiceView = () => {
 
+
+    const token = Cookies.get('token')
+    const headers = {
+        'Authorization': 'Bearer '+ token
+    }
     const [form, setForm] = useState(false);
     const [services, setServices] = useState([]);
     const [idService, setIdService] = useState('');

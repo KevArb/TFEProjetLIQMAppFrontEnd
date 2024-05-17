@@ -7,10 +7,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import UpdateSupplierForm from './UpdateSupplierForm';
 import NewSupplierForm from './NewSupplierForm';
-import { headers } from '../../utils/functions/constLibrary'
+import Cookies from 'js-cookie';
 
 const ListSupplierView = () => {
 
+    const token = Cookies.get('token')
+    const headers = {
+        'Authorization': 'Bearer '+ token
+    }
     const [form, setForm] = useState(false);
     const [suppliers, setSuppliers] = useState([]);
     const [idSupplier, setIdSuppleir] = useState('');

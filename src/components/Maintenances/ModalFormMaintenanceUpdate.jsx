@@ -1,12 +1,17 @@
 // eslint-disable-next-line no-unused-vars
 import React, {useEffect, useState} from 'react'
-import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, MenuItem, Select, TextField, FormControlLabel } from '@mui/material'
+import { Button, Checkbox, Dialog, DialogActions, DialogContent, FormControl, MenuItem, Select, TextField, FormControlLabel } from '@mui/material'
 import './css/ModalMaintenanceUpdate.css'
-import { headers} from '../../utils/functions/constLibrary'
 import axios from 'axios'
+import Cookies from 'js-cookie'
 
 const ModalFormMaintenanceUpdate = ( props ) => {
 
+
+    const token = Cookies.get('token')
+    const headers = {
+        'Authorization': 'Bearer '+ token
+    }
     const [open, setOpen] = useState(true)
     const [maintenance, setMaintenance] = useState({})
     const [equipments, setEquipments] = useState([])

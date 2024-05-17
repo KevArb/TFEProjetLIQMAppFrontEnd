@@ -8,12 +8,16 @@ import Sidebar from '../Sidebar/Sidebar'
 import './css/ListSheets.css'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Dialog, DialogContent, Button, Select, MenuItem, DialogActions  } from '@mui/material'
 import {formatDateTime} from '../../utils/functions/Library'
-import { headers } from '../../utils/functions/constLibrary'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Cookies from 'js-cookie'
 
 const AllMaintenanceSheetsView = () => {
 
+    const token = Cookies.get('token')
+    const headers = {
+        'Authorization': 'Bearer '+ token
+    }
     const navigateTo = useNavigate()
     const [role, setRole] = useState([])
     const [maintenanceSheets, setMaintenanceSheets] = useState([])

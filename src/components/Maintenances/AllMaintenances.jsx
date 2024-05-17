@@ -5,9 +5,14 @@ import Sidebar from '../Sidebar/Sidebar'
 import './css/ListSheets.css'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, FormControlLabel } from '@mui/material'
 import {formatDateTime} from '../../utils/functions/Library'
-import { headers } from '../../utils/functions/constLibrary'
+import Cookies from 'js-cookie'
 
 const AllMaintenances = () => {
+
+    const token = Cookies.get('token')
+    const headers = {
+        'Authorization': 'Bearer '+ token
+    }
 
     const [role, setRole] = useState([])
     const [maintenances, setMaintenances] = useState([])

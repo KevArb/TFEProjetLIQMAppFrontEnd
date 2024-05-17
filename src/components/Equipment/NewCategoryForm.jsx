@@ -2,12 +2,15 @@
 import React, { useState } from 'react'
 import axios from 'axios';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { headers } from '../../utils/functions/constLibrary'
+import Cookies from 'js-cookie';
 
 const NewCategoryForm = () => {
 
+    const token = Cookies.get('token')
+    const headers = {
+        'Authorization': 'Bearer '+ token
+    }
     const [open, setOpen] = useState(true);
-
     const [data, setData] = useState({
         name: '',
       });

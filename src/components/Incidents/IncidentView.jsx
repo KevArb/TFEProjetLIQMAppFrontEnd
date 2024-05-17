@@ -11,10 +11,14 @@ import { formatDateTime } from '../../utils/functions/Library'
 import ModalFormChangeStatusIncident from './ModalFormChangeStatusIncident'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import { faMessage } from '@fortawesome/free-solid-svg-icons'
-import { headers } from '../../utils/functions/constLibrary'
+import Cookies from 'js-cookie'
 
 const IncidentView = () => {
 
+    const token = Cookies.get('token')
+    const headers = {
+        'Authorization': 'Bearer '+ token
+    }
     const {id} = useParams()    
     const [incident, setIncident] = useState({})
     const [role, setRole] = useState([])

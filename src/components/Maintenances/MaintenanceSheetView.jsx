@@ -10,10 +10,14 @@ import { faCheck, faCircleCheck, faFilePen, faComment, faCircleInfo, faHourglass
 import { Button, Tooltip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Dialog, Alert, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material'
 import CommentStepModalForm from './CommentStepModalForm'
 import { formatDateTime } from '../../utils/functions/Library'
-import { headers } from '../../utils/functions/constLibrary'
+import Cookies from 'js-cookie'
 
 const MaintenanceSheetView = () => {
 
+    const token = Cookies.get('token')
+    const headers = {
+        'Authorization': 'Bearer '+ token
+    }
     const {id} = useParams()
     const [fms, setFms] = useState({})
     const [role, setRole] = useState([])

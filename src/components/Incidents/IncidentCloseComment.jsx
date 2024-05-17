@@ -3,10 +3,14 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Dialog, DialogActions, DialogContent, Button, TextField, DialogTitle } from '@mui/material';
-import { headers } from '../../utils/functions/constLibrary';
+import Cookies from 'js-cookie';
 
 const IncidentCloseComment = () => {
 
+    const token = Cookies.get('token')
+    const headers = {
+        'Authorization': 'Bearer '+ token
+    }
     const {id} = useParams();
     const [open, setOpen] = useState(true)
     const [data, setData] = useState({
