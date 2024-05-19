@@ -6,9 +6,7 @@ function App() {
   return (
     <>
       <AuthProvider>
-        <div>
-            <LoginView />
-        </div>
+          <LoginView />      
       </AuthProvider>
     </>
   )

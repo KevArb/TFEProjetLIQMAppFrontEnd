@@ -19,6 +19,7 @@ import ListSupplierView from '../../components/Equipment/ListSupplierView.jsx'
 import AllMaintenances from '../../components/Maintenances/AllMaintenances.jsx'
 import EquipmentCards from '../../components/Equipment/EquipmentsCards.jsx'
 import UserList from '../../components/Users/UserList.jsx'
+import NotFoundPage from '../../components/ErrorPages/NotFoundPage.jsx'
 
 const router = createBrowserRouter([
     {
@@ -100,6 +101,10 @@ const router = createBrowserRouter([
     {
       path: '/listUser',
       element: <UserList />
+    }, 
+    {
+      path: '*',
+      element: <NotFoundPage />
     }
   ])
 
