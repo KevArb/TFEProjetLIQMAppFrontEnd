@@ -98,6 +98,7 @@ const NewMaintenanceForm = () => {
                 } 
             }).catch((error) => {
                 console.log(error)
+                
             })
         }
         fetchData();

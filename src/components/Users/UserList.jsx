@@ -10,6 +10,7 @@ import { formatErrMsg } from '../../utils/functions/Library'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import UpdateRoleForm from './UpdateRoleForm'
+import { useNavigate } from 'react-router-dom';
 
 const UserList = () => {
 
@@ -17,8 +18,8 @@ const UserList = () => {
     const headers = {
         'Authorization': 'Bearer '+ token
     }
+    const navigateTo = useNavigate()
     const [users, setUsers] = useState([])
-    const [getUser, setGetUser] = useState([])
     const [addUser, setAddUser] = useState(false)
     const [userSelectId, setUSerSelecteId] = useState('')
     const [data, setData] = useState({
@@ -57,8 +58,6 @@ const UserList = () => {
         setAddUser(!addUser)
     }
 
-    console.log(getUser)
-
     const handleSubmitNewUser = () => {
         const dataUser = {
             role: data.role,
@@ -90,7 +89,9 @@ const UserList = () => {
             await axios.get(`http://127.0.0.1:8000/api/user/`, { headers }).then((response) => {
                 setUsers(response.data.data)
             }).catch((error) => {
-                console.log(error)
+                if (error.response.status === 403) {
+                    return navigateTo('/403')
+                }
             })
         }
 

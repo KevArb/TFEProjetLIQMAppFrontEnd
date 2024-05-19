@@ -1,0 +1,20 @@
+.container-error-page {
+    margin-top: 400px;
+    gap: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-error-page h1 {
+    font-size: 60px;
+}
+
+.container-error-page span {
+    font-size: 30px;
+}
+
+.link {
+    font-size: 30px;
+}
