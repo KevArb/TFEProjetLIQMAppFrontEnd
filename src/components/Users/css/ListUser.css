@@ -18,6 +18,13 @@
     transform: scale(1.2);
 }
 
+.user-row {
+    cursor: pointer;
+}
+.user-row:hover {
+    transform: scale(1.007);
+}
+
 .err-msg {
     color: red;
 }

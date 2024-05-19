@@ -7,9 +7,9 @@ import Cookies from 'js-cookie'
 import axios from 'axios'
 import './css/ListUser.css'
 import { formatErrMsg } from '../../utils/functions/Library'
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import UpdateRoleForm from './UpdateRoleForm'
 
 const UserList = () => {
 
@@ -18,7 +18,9 @@ const UserList = () => {
         'Authorization': 'Bearer '+ token
     }
     const [users, setUsers] = useState([])
+    const [getUser, setGetUser] = useState([])
     const [addUser, setAddUser] = useState(false)
+    const [userSelectId, setUSerSelecteId] = useState('')
     const [data, setData] = useState({
         role: '',
         lastName: '',
@@ -28,6 +30,8 @@ const UserList = () => {
         password: '',
         passwordConfirm: ''
     })
+
+    const [updateUserForm, setUpdateUserForm] = useState(false)
 
     const [errMsg, setErrMsg] = useState([])
     const [errMsgLogin, setErrMsgLogin] = useState('')
@@ -40,15 +44,20 @@ const UserList = () => {
         })   
     }
 
-    console.log(data)
-
     const addUserForm = () => {
         setAddUser(!addUser)
+    }
+
+    const updateUserModalForm = (id) => {
+        setUpdateUserForm(!updateUserForm)
+        setUSerSelecteId(id)
     }
 
     const handleClose = () => {
         setAddUser(!addUser)
     }
+
+    console.log(getUser)
 
     const handleSubmitNewUser = () => {
         const dataUser = {
@@ -75,6 +84,7 @@ const UserList = () => {
 
         addNewUser()
     }
+
     useEffect(() => {
         const getAllUsers = async () => {
             await axios.get(`http://127.0.0.1:8000/api/user/`, { headers }).then((response) => {
@@ -96,6 +106,7 @@ const UserList = () => {
                 <div>
                     <FontAwesomeIcon className='add-user-btn' onClick={addUserForm} icon={faUserPlus} size='2x'/>
                 </div>
+
                 {addUser ? 
                 <div>
                 <Dialog open={addUser}>
@@ -130,8 +141,15 @@ const UserList = () => {
                         <Button onClick={handleClose}>Annuler</Button>
                 </DialogActions>
                 </Dialog>
-                
                 </div> : null}
+
+                <div>
+                    { updateUserForm ? 
+                        <div>
+                            <UpdateRoleForm userId={userSelectId} />
+                        </div> : null}
+                </div>
+
                 <TableContainer>
                     <Table>
                         <TableHead>
@@ -145,7 +163,7 @@ const UserList = () => {
                         <TableBody>
                             {users?.map((user) => {
                                 return(
-                                    <TableRow key={user._id}>
+                                    <TableRow className='user-row' onClick={() => updateUserModalForm(user._id)} key={user._id}>
                                         <TableCell>{user.lastName}</TableCell>
                                         <TableCell>{user.firstName}</TableCell>
                                         <TableCell>{user.login}</TableCell>
@@ -157,6 +175,8 @@ const UserList = () => {
                     </Table>
                 </TableContainer>
             </div>
+
+            
         </div>
     )
 }

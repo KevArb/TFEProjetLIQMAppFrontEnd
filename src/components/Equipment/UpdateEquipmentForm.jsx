@@ -9,6 +9,7 @@ import './css/UpdateEquipment.css';
 
 
 const UpdateEquipmentForm = () => {
+    
     const token = Cookies.get('token');
     const {id} = useParams();
     const [equipment, setEquipment] = useState([])
