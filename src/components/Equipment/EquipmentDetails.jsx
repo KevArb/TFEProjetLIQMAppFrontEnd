@@ -233,9 +233,9 @@ const EquipmentDetails = () => {
                         </div>
                     </div>
                     <div className="equipment-details-action">
-                        <ArchiveButton className='btn-action' equipment={equipment} />
+                        {role === 'admin' || role === 'manager' ? <ArchiveButton className='btn-action' equipment={equipment} /> : null }
                         {role === 'admin' ? <button className='btn-action' onClick={deleteEquipment}>Supprimer</button> : <div></div>}
-                        <Link className='btn-action' to={`/equipment-details-update/${id}`}><button>Modifier</button></Link>
+                        {role === 'admin' || role === 'manager' ? <Link className='btn-action' to={`/equipment-details-update/${id}`}><button>Modifier</button></Link> : null }
                     </div>
                 </div>                 
             </div>   

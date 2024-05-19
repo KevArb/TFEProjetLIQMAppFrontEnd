@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import UpdateServiceForm from './UpdateServiceForm';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const ListServiceView = () => {
 
@@ -16,6 +17,7 @@ const ListServiceView = () => {
     const headers = {
         'Authorization': 'Bearer '+ token
     }
+    const navigateTo = useNavigate()
     const [form, setForm] = useState(false);
     const [services, setServices] = useState([]);
     const [idService, setIdService] = useState('');
@@ -50,7 +52,9 @@ const ListServiceView = () => {
                 await axios.get(`http://127.0.0.1:8000/api/service/`, { isUsed : true}, { headers }).then((response) => {
                     setServices(response.data.data);
                 }).catch((error) => {
-                    console.log(error);
+                    if (error.response.status === 403) {
+                        return navigateTo('/403')
+                    }
                 })
             }
             fecthData();

@@ -8,6 +8,7 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import UpdateSupplierForm from './UpdateSupplierForm';
 import NewSupplierForm from './NewSupplierForm';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const ListSupplierView = () => {
 
@@ -15,6 +16,7 @@ const ListSupplierView = () => {
     const headers = {
         'Authorization': 'Bearer '+ token
     }
+    const navigateTo = useNavigate()
     const [form, setForm] = useState(false);
     const [suppliers, setSuppliers] = useState([]);
     const [idSupplier, setIdSuppleir] = useState('');
@@ -40,7 +42,9 @@ const ListSupplierView = () => {
                 await axios.get(`http://127.0.0.1:8000/api/supplier/`, { headers }).then((response) => {
                     setSuppliers(response.data.data);
                 }).catch((error) => {
-                    console.log(error);
+                    if (error.response.status === 403) {
+                        return navigateTo('/403')
+                    }
                 })
             }
             fecthData();

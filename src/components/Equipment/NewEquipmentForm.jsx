@@ -10,6 +10,7 @@ import './css/NewEquipment.css'
 import { Button, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
+import { useNavigate } from 'react-router-dom';
 
 
 const NewEquipmentForm = () => {
@@ -27,7 +28,8 @@ const NewEquipmentForm = () => {
     const [errMsgSupplier, setErrMsgSupplier] = useState('')
     const [errMsgService, setErrMsgService] = useState('')
     const [errMsgCat, setErrMsgCat] = useState('')
-
+    const navigateTo = useNavigate()
+    // eslint-disable-next-line no-unused-vars
     const [image, setImage] = useState()
 
     const addServiceForm = () => {
@@ -118,7 +120,9 @@ const NewEquipmentForm = () => {
                     }  
                 })
             } catch (error) {
-                console.log(error)
+                if (error.response.status === 403) {
+                    return navigateTo('/403')
+                }
             }
         }
         fetchData()

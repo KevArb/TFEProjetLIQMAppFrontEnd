@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import axios from 'axios';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const NewCategoryForm = () => {
 
@@ -10,6 +11,7 @@ const NewCategoryForm = () => {
     const headers = {
         'Authorization': 'Bearer '+ token
     }
+    const navigateTo = useNavigate()
     const [open, setOpen] = useState(true);
     const [data, setData] = useState({
         name: '',
@@ -44,7 +46,9 @@ const NewCategoryForm = () => {
                 }
             });            
         } catch (error) {
-            console.log(error)
+            if (error.response.status === 403) {
+                return navigateTo('/403')
+            }
         }
 
     };
